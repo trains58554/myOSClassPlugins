@@ -1,0 +1,14 @@
+#carouselContainerLeft {float: left; position:relative; left: 50%; visibility:hidden; }
+#carouselContainerRight { float: left; position:relative; left: -50%; visibility:hidden; }
+#carousel {float:left; height:142px;width:<?php echo $carouselWidth; ?>; position:relative; visibility:visible; margin:0 0 15px 0;border-bottom: 1px solid #DDDDDD;border-top: 1px solid #DDDDDD;}
+h4.carousel {color: #444;font-size: 16px;font-weight: normal;margin: 10px 0px 0px 0px;padding: 0px 0px 5px 0px;	letter-spacing:-1px;font-weight:bold;}
+#carousel .slider {float:left;left: -5000px; margin:15px; position:relative; visibility:hidden;}
+#carousel .slider ul {height:110px;width:552px;}
+#carousel .slider ul li {padding:0 6px;height:112px;text-align:center;font-size:11px; line-height:11px; width:98px}
+#carousel .slider ul li a {font-weight:bold;}
+#carousel .slider ul li a img {cursor:pointer;height:65px;width:90px;padding: 3px;margin-bottom:2px;border: 1px solid #ccc;}
+#carousel .slider ul li a:hover img {cursor:pointer;height:65px;width:90px;padding: 3px;margin-bottom:2px;border: 1px solid #333;}
+#carousel .prev {cursor:pointer;float:left;padding-top:44px;}
+#carousel .next {cursor:pointer;float:right;padding-top:44px;}
+	
+
