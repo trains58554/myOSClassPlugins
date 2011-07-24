@@ -90,7 +90,7 @@
                             <?php     } ?>
                             <?php } ?>
                             <strong class="share"><a href="<?php echo osc_item_send_friend_url() ; ?>" rel="nofollow"><?php _e('Share', 'modern') ; ?></a></strong>
-                        <strong class="share"><?php seller_post(); ?></strong>
+                        <?php button_seller_post(); ?>
                         </p>
                         <?php osc_run_hook('location') ; ?>
                     </div>

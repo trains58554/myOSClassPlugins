@@ -96,12 +96,14 @@ Plugin update URI:
     $scrolldelay = (osc_item_carousel_scrolldelay() != '') ? osc_item_carousel_scrolldelay() : '' ;
     $item_price_enabled = (osc_item_carousel_price() != '') ? osc_item_carousel_price() : '' ;
     $pictures_enabled = (osc_pic_enabled() != '') ? osc_pic_enabled() : '' ;
+    //$items = '8';
     ?>
     	<style>
     		<?php 
     		if ($items==3){ $carouselWidth= '400px';}
     		elseif ($items==4){ $carouselWidth= '510px';}
     		else {$carouselWidth= '620px';}
+    		//$carouselWidth = '950px';
     		$cssurl = 'oc-content/plugins/item_carousel/slideshow.css' ;
     		include($cssurl) ; ?>
     	</style>

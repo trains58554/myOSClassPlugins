@@ -34,6 +34,7 @@
                 <?php osc_current_web_theme_path('inc.search.php') ; ?>
             </div>
             <div class="content home">
+            <?php show_ads('htmlAd1'); ?> 
             <div id="leftsidebar">
                     <div class="navigation">
                         <div class="box location">
@@ -42,7 +43,7 @@
                             <?php osc_goto_first_category() ; ?>
             		    <?php while ( osc_has_categories() ) { ?> 
             		    <li>           		
-                            <h2><strong><a href="<?php echo osc_search_category_url() ; ?>"><?php echo osc_category_name() ; ?></a> <span>(<?php echo osc_category_total_items() ; ?>)</span></strong></h2></li>
+                            <h2><strong><a href="<?php echo osc_search_category_url() ; ?>"><?php echo osc_category_name() ; ?></a> <span>(<?php echo osc_category_total_items() ; ?>)</span></strong><br /> <?php echo osc_category_description(); ?></h2></li>
                         <?php } ?>
                             </ul>
                         </div>
@@ -75,7 +76,7 @@
                                             <?php } ?>
                                              <td class="text">
                                                  <h3><a href="<?php echo osc_item_url() ; ?>"><?php echo osc_item_title() ; ?></a></h3>
-                                                 <p><strong><?php if( osc_price_enabled_at_items() ) { echo osc_item_formated_price() ; ?> - <?php } echo osc_item_city(); ?> (<?php echo osc_item_region();?>) - <?php echo osc_format_date(osc_item_pub_date()); ?></strong></p>
+                                                 <p><strong><?php if( osc_price_enabled_at_items() ) { echo osc_item_formated_price() ; ?> - <?php } echo osc_item_city(); ?> (<?php echo osc_item_region();?>) - <?php echo osc_format_date(osc_item_pub_date()); ?></strong> <?php watchlist(); ?></p>
                                                  <p><?php echo osc_highlight( strip_tags( osc_item_description() ) ) ; ?></p>
                                              </td>                                       
                                          </tr>

@@ -63,6 +63,7 @@
     
 ?>
 <?php
+//version checking
 if ($verOK == 0){
  echo '<div style="text-align:center; font-size:22px; background-color:#fff;"><p>' . __('We have detected you are not using OSClass 2.2. Some features are disabled', 'item_carousel') . '.</p></div>';}
 ?>
