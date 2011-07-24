@@ -1,0 +1,53 @@
+/* Tables ------------------------------------------------------------------*/
+
+#settings_form table {
+	border: 1px solid #B8B8B8;
+	width:100%;
+}
+#settings_form table tr td {
+	background: #F7F7F7;
+	padding: 10px 20px;
+	border-bottom: 1px solid #B8B8B8;
+}
+#settings_form table tr.odd td {
+	background: #FFFFFF;
+}
+#settings_form table tr.thead td {
+	background: #D9D7D8;
+	text-transform:uppercase;
+	font-weight:bold;
+	font-size:12px;
+	padding: 8px 20px;
+}
+#settings_form table tr.thead:hover td {
+	background: #D9D7D8;
+}
+#settings_form table tr:hover td {
+	background: #fdfcf6;
+}
+#settings_form table .action {
+	text-align: right;
+	padding: 0 20px 0 10px;
+	color:#CCC;
+	font-size:12px;
+}
+#settings_form table tr .action a {
+	margin: 0 4px;
+	text-decoration: none;
+	color: #30A4B1;
+	text-transform:uppercase;
+}
+#settings_form table tr .action .edit {
+	color: #55a34a;
+}
+#settings_form table tr .action .delete {
+	color: #a02b2b;
+}
+#settings_form table tr:hover .action a:hover {
+	text-decoration: underline;
+}
+#settings_form .desc {
+	margin-top:-15px;
+	margin-bottom:20px;
+}
+
