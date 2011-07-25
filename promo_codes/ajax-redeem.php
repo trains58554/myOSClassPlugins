@@ -7,6 +7,9 @@ $promocode = $_POST['promo_codes'];
             $conn   = getConnection();
             $detail = $conn->osc_dbFetchResult("SELECT * FROM %st_promo_code WHERE promo_code LIKE '%s' AND enabled = '%d'", DB_TABLE_PREFIX, $promocode, 1);
             
+            //checks if the user already has a row in the paypal_walet table
+            //$conn = getConnection();
+            $paypal_wallet = $conn->osc_dbFetchResult("SELECT * FROM %st_paypal_wallet WHERE fk_i_user_id  = '%d'", DB_TABLE_PREFIX, osc_logged_user_id());
             
             //If somthing is returned then we can process
 	    if($detail){
@@ -21,40 +24,76 @@ $promocode = $_POST['promo_codes'];
             			if($detail['uses_remaining'] != 0){
             				$success = TRUE;
             				
+            				//logs the promo code 
             				$conn = getConnection();
                 			$conn->osc_dbExec("INSERT INTO %st_promo_code_redeemed (fk_i_user_id, promo_code_id) VALUES (%d, '%d')", DB_TABLE_PREFIX, osc_logged_user_id(), $detail['id']);
                 			
+                			//udates the number of uses remaining for promo code
                 			$conn = getConnection();
                 			$conn->osc_dbExec("UPDATE %st_promo_code SET uses_remaining = '%d' WHERE id = '%d'", DB_TABLE_PREFIX, $detail['uses_remaining'] -1, $detail['id']);
+                			                			
+                			//if user exists in table then update else add user to table
+                			if ($paypal_wallet){
+                				$new_amount = $paypal_wallet['f_amount'] + $detail['promo_value'];
+                				//udates wallet amount plus the promo_value
+                				$conn = getConnection();
+                				$conn->osc_dbExec("UPDATE %st_paypal_wallet SET f_amount = '%f' WHERE fk_i_user_id = '%d'", DB_TABLE_PREFIX, $new_amount, osc_logged_user_id());
+                			}
+                			else{
+                				//adds user to paypal_wallet and gives them the promo_value 
+            					$conn = getConnection();
+                				$conn->osc_dbExec("INSERT INTO %st_paypal_wallet (fk_i_user_id, f_amount) VALUES (%d, '%f')", DB_TABLE_PREFIX, osc_logged_user_id(), $detail['promo_value']);
+                			}
             			}
             			else {
             				$success = FALSE;
-            				$meserror = 'Sorry this code is no longer valid';
+            				$meserror = __('Sorry this code is no longer valid', 'promo');
             			}
             		}
             		else {
             			$success = TRUE;
+            			
+            			//logs the promo code 
+            			$conn = getConnection();
+                		$conn->osc_dbExec("INSERT INTO %st_promo_code_redeemed (fk_i_user_id, promo_code_id) VALUES (%d, '%d')", DB_TABLE_PREFIX, osc_logged_user_id(), $detail['id']);
+                			
+            			//if user exists in table then update else add user to table
+                		if ($paypal_wallet){
+                			$new_amount = $paypal_wallet['f_amount'] + $detail['promo_value'];
+                			//udates wallet amount plus the promo_value
+                			$conn = getConnection();
+                			$conn->osc_dbExec("UPDATE %st_paypal_wallet SET f_amount = '%f' WHERE fk_i_user_id = '%d'", DB_TABLE_PREFIX, $new_amount, osc_logged_user_id());
+                		}
+                		else{
+                			//adds user to paypal_wallet and gives them the promo_value 
+            				$conn = getConnection();
+                			$conn->osc_dbExec("INSERT INTO %st_paypal_wallet (fk_i_user_id, f_amount) VALUES (%d, '%f')", DB_TABLE_PREFIX, osc_logged_user_id(), $detail['promo_value']);
+                		}
             		}
 		
 		}
 		else{ 
-			$sucess = FALSE;
-			$meserror = 'Sorry you have already redeemed this code';
+			$success = FALSE;
+			$meserror = __('Sorry you have already redeemed this code', 'promo');
 		}
 	    }
 	    else {
-	    	$sucess= FALSE;
-	    	$meserror = 'Sorry this code is not valid';
+	    	$success= FALSE;
+	    	$meserror = __('Sorry this code is not valid', 'promo');
 	    	
 	    }
 	}
+	else {
+            //error user is not login in
+            echo '<a href="' . osc_user_login_url() . '">' . __('Please login', 'promo') . '</a>';
+        }
 
 if ($success){
-    $message = 'Yay! Everything went well!';
+    $message = sprintf(__('You just got %.2f %s credited to your account', 'promo'),$detail['promo_value'],osc_get_preference('currency', 'paypal'));
 
 }
 else {
-    $message = 'Error: ' . $meserror;
+    $message = __('Error: ','promo') . $meserror;
     
 }
 $json = array(

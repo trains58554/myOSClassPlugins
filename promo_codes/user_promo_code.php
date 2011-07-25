@@ -11,6 +11,7 @@
         <p><label for="promo_code"><?php _e('Enter Promotion Code', 'promo'); ?>:</label> <input id="promo_codes" name="promo_codes" type="text" />
         <input type="submit" value="<?php _e('Redeem', 'promo'); ?>" /></p>
      </form>
+     <br />
      <span id="promo-message"></span>
      </div>
 </div>

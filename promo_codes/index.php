@@ -68,10 +68,14 @@
             "' . osc_ajax_plugin_url("promo_codes/ajax-redeem.php") . '",
             $("#promo-code-form").serialize(),
             function(data){
-                if (data.success)
-                    $("span#promo-message").css({"color":"green"});
-                else
+                if (data.success){
+                    $("span#promo-message").css({"color":"green"} );
+                    $("span#promo-message").css({"font-size":"20px"} );
+                }
+                else{
                     $("span#promo-message").css({"color":"red"});
+                    $("span#promo-message").css({"font-size":"20px"} );
+                }
                 $("span#promo-message").html(data.message);
             },
             "json"
