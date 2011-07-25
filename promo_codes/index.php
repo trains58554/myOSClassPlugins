@@ -31,15 +31,14 @@
     
     function table(){
 		  //check if a table exist
-		  $conn = getConnection();
-          $table_list = $conn->osc_dbFetchValues('SHOW TABLES FROM %s', DB_NAME);
-		  if (in_array(vsprintf("%st_paypal_log", DB_TABLE_PREFIX), $table_list)) {
-             $result = "Installed!";
-          }else{
-			$result = 'Not installed.';
-		  }
-		  return $result;
-	  }
+		 $conn = getConnection();
+		 $table_list = $conn->osc_dbFetchValue("SHOW TABLES FROM %s LIKE '%st_paypal%%'", DB_NAME, DB_TABLE_PREFIX);
+		 if ($table_list){
+		 	return TRUE;
+		 }else{
+		 	return FALSE;
+		 }
+    }
     
     function promo_call_after_install() {
         $conn = getConnection() ;
@@ -90,9 +89,11 @@
 
     // This is a hack to show a Configure link at plugins table (you could also use some other hook to show a custom option panel)
     osc_add_hook(osc_plugin_path(__FILE__) . '_configure', 'promo_help') ;
-
+    $tableexist = table();
+    if($tableexist){
     // Add link in user menu page
     osc_add_hook('user_menu', 'promo_user_menu') ;
+    }
     // Add link in admin menu page
     osc_add_hook('admin_menu', 'promo_admin_menu') ;
     // add javascript
