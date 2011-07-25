@@ -18,7 +18,7 @@
     }*/
 
     function promo_user_menu() {
-        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . '#') . '" >' . __('Enter Promotion Codes', 'promo') . '</a></li>' ;
+        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'user_promo_code.php') . '" >' . __('Enter Promotion Codes', 'promo') . '</a></li>' ;
     }
     
     function promo_admin_menu() {
@@ -57,6 +57,30 @@
     function promo_help() {
         osc_admin_render_plugin(osc_plugin_path(dirname(__FILE__)) . '/help.php') ;
     }
+    
+    // Promo code js
+    function promo_js(){
+    echo "\n";
+    echo '<!-- promo_code js -->
+    <script type="text/javascript">  
+    $(document).ready(function(){
+    $("#promo-code-form").submit(function(){
+        $.post(
+            "' . osc_ajax_plugin_url("promo_codes/ajax-redeem.php") . '",
+            $("#promo-code-form").serialize(),
+            function(data){
+                if (data.success)
+                    $("span#promo-message").css({"color":"green"});
+                else
+                    $("span#promo-message").css({"color":"red"});
+                $("span#promo-message").html(data.message);
+            },
+            "json"
+        );
+    });
+});
+    </script>  ';
+    }
 
     // This is needed in order to be able to activate the plugin
     osc_register_plugin(osc_plugin_path(__FILE__), 'promo_call_after_install') ;
@@ -71,7 +95,8 @@
     osc_add_hook('user_menu', 'promo_user_menu') ;
     // Add link in admin menu page
     osc_add_hook('admin_menu', 'promo_admin_menu') ;
-
+    // add javascript
+    osc_add_hook('header', 'promo_js') ;
 
 
 
