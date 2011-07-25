@@ -10,6 +10,7 @@ CREATE TABLE /*TABLE_PREFIX*/t_promo_code_redeemed (
 
 CREATE TABLE /*TABLE_PREFIX*/t_promo_code(
 id int( 10 ) unsigned NOT NULL AUTO_INCREMENT ,
+endabled int(1) NOT NULL,
 promo_code VARCHAR( 10 ) ,
 number_days VARCHAR( 10 ) ,
 create_dates VARCHAR( 10 ) ,
