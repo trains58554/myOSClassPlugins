@@ -8,7 +8,7 @@ $promocode = $_POST['promo_codes'];
             $detail = $conn->osc_dbFetchResult("SELECT * FROM %st_promo_code WHERE promo_code LIKE '%s' AND enabled = '%d'", DB_TABLE_PREFIX, $promocode, 1);
             
             //checks if the user already has a row in the paypal_walet table
-            //$conn = getConnection();
+            $conn = getConnection();
             $paypal_wallet = $conn->osc_dbFetchResult("SELECT * FROM %st_paypal_wallet WHERE fk_i_user_id  = '%d'", DB_TABLE_PREFIX, osc_logged_user_id());
             
             //If somthing is returned then we can process

@@ -24,8 +24,8 @@
     function promo_admin_menu() {
    	 echo '<h3><a href="#">Promo Code</a></h3><ul>';
    	 
-        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'admin_list.php') . '" >&raquo; ' . __('Manage promo Codes', 'promo') . '</a></li>' .
-        '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . '#') . '" >&raquo; ' . __('F.A.Q. / Help', 'promo') . '</a></li>' ;
+        echo '<li class="" ><a href="' . osc_admin_render_plugin_url('promo_codes/admin_list.php') . '" >&raquo; ' . __('Manage promo Codes', 'promo') . '</a></li>' .
+        '<li class="" ><a href="' . osc_admin_render_plugin_url('promo_codes/#') . '" >&raquo; ' . __('F.A.Q. / Help', 'promo') . '</a></li>' ;
         echo '</ul>';
     }
     
