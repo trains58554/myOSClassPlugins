@@ -1,8 +1,13 @@
 <?php 
 $conn   = getConnection();
 $detail = $conn->osc_dbFetchResults("SELECT * FROM %st_promo_code", DB_TABLE_PREFIX);
+ $tableexist = table();
+    if(!$tableexist){
+	echo'<h2>'. __('Please install the paypal plugin for this plugin to work.','promo') . '</h2>';
+}
 
 echo '<a href="' . osc_admin_render_plugin_url('promo_codes/admin_create.php') . '" >' . __('Create New Promo Code', 'promo') . '</a>';
+
 ?>
 <div class="dataTables_wrapper">
                     <table cellpadding="0" cellspacing="0" border="0" class="display" id="datatables_list">

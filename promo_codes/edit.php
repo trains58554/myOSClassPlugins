@@ -31,7 +31,7 @@ switch($promo_action) {
     	if( Params::getParam('option') == 'stepone' ) {
         
         $conn = getConnection();
-        $conn->osc_dbExec("UPDATE %st_promo_code SET enabled = '%d', max_uses = '%d', promo_value = '%d' WHERE id = '%d'", DB_TABLE_PREFIX, $enabled, $max_uses, $promo_value, $promo_id);
+        $conn->osc_dbExec("UPDATE %st_promo_code SET enabled = '%d', max_uses = '%d', uses_remaining = '%d', promo_value = '%d' WHERE id = '%d'", DB_TABLE_PREFIX, $enabled, $max_uses, $max_uses, $promo_value, $promo_id);
         
      	osc_add_flash_message(__('Promotion Code Changes Saved', 'promo'), 'admin');
      	// HACK TO DO A REDIRECT

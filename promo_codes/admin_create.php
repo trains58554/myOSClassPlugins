@@ -79,7 +79,12 @@ function checkPunc(num) {
     return false;
 }
 </script>
-
+<?php 
+ $tableexist = table();
+    if(!$tableexist){
+	echo'<h2>' .__('Your users will not be able to use your promotion codes untill you install the paypal plugin.','promo') . '</h2>';
+}
+?>
 <form name="create_promo" action="<?php osc_admin_base_url(true); ?>" method="post">
     <input type="hidden" name="page" value="plugins" />
     <input type="hidden" name="action" value="renderplugin" />

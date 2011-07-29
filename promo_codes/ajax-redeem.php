@@ -85,7 +85,7 @@ $promocode = $_POST['promo_codes'];
 	}
 	else {
             //error user is not login in
-            echo '<a href="' . osc_user_login_url() . '">' . __('Please login', 'promo') . '</a>';
+           $meserror = '<a href="' . osc_user_login_url() . '">' . __('Please login', 'promo') . '</a>';
         }
 
 if ($success){
