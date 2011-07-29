@@ -24,8 +24,10 @@
     function promo_admin_menu() {
    	 echo '<h3><a href="#">Promo Code</a></h3><ul>';
    	 
-        echo '<li class="" ><a href="' . osc_admin_render_plugin_url('promo_codes/admin_list.php') . '" >&raquo; ' . __('Manage promo Codes', 'promo') . '</a></li>' .
-        '<li class="" ><a href="' . osc_admin_render_plugin_url('promo_codes/#') . '" >&raquo; ' . __('F.A.Q. / Help', 'promo') . '</a></li>' ;
+        echo '<li class="" ><a href="' . osc_admin_render_plugin_url('promo_codes/user_reward.php') . '" >&raquo; ' . __('Signup Bonus', 'promo') . '</a></li>' .
+        '<li class="" ><a href="' . osc_admin_render_plugin_url('promo_codes/admin_list.php') . '" >&raquo; ' . __('Manage promo Codes', 'promo') . '</a></li>' .
+        '<li class="" ><a href="' . osc_admin_render_plugin_url('promo_codes/admin_create.php') . '" >&raquo; ' . __('Create New Promo Code', 'promo') . '</a></li>' .
+        '<li class="" ><a href="' . osc_admin_render_plugin_url('promo_codes/help.php') . '" >&raquo; ' . __('F.A.Q. / Help', 'promo') . '</a></li>' ;
         echo '</ul>';
     }
     

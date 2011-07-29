@@ -89,7 +89,7 @@ $promocode = $_POST['promo_codes'];
         }
 
 if ($success){
-    $message = sprintf(__('You just got %.2f %s credited to your account', 'promo'),$detail['promo_value'],osc_get_preference('currency', 'paypal'));
+    $message = sprintf(__('You just got %.2f %s credited to your account', 'promo'),$detail['promo_value'],osc_get_preference('currency', 'promo'));
 
 }
 else {
