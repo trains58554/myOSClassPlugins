@@ -26,7 +26,7 @@ $promocode = $_POST['promo_codes'];
             				
             				//logs the promo code 
             				$conn = getConnection();
-                			$conn->osc_dbExec("INSERT INTO %st_promo_code_redeemed (fk_i_user_id, promo_code_id) VALUES (%d, '%d')", DB_TABLE_PREFIX, osc_logged_user_id(), $detail['id']);
+                			$conn->osc_dbExec("INSERT INTO %st_promo_code_redeemed (fk_i_user_id, promo_code_id) VALUES (%d, '%s')", DB_TABLE_PREFIX, osc_logged_user_id(), $detail['promo_code']);
                 			
                 			//udates the number of uses remaining for promo code
                 			$conn = getConnection();
@@ -55,7 +55,7 @@ $promocode = $_POST['promo_codes'];
             			
             			//logs the promo code 
             			$conn = getConnection();
-                		$conn->osc_dbExec("INSERT INTO %st_promo_code_redeemed (fk_i_user_id, promo_code_id) VALUES (%d, '%d')", DB_TABLE_PREFIX, osc_logged_user_id(), $detail['id']);
+                		$conn->osc_dbExec("INSERT INTO %st_promo_code_redeemed (fk_i_user_id, promo_code_id) VALUES (%d, '%s')", DB_TABLE_PREFIX, osc_logged_user_id(), $detail['promo_code']);
                 			
             			//if user exists in table then update else add user to table
                 		if ($paypal_wallet){

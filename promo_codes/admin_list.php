@@ -40,7 +40,7 @@ echo '<a href="' . osc_admin_render_plugin_url('promo_codes/admin_create.php') .
                             	<td><?php if($details['enabled'] = 1){echo __('Enabled','promo');} else{ echo __('Disabled','promo');} ?></td>
                             	<td><?php echo $details['create_dates']; ?></td>
                             	<td><?php if($details['max_uses'] == 0){echo __('Unlimited','promo');} else{echo $details['max_uses'];} ?></td>
-                            	<td><?php if($details['uses_remaining'] == 0){echo __('Unlimited','promo');} else{echo $details['uses_remaining'];} ?></td>
+                            	<td><?php if($details['max_uses'] == 0){echo __('Unlimited','promo');} else{echo $details['uses_remaining'];} ?></td>
                             	<td><?php echo $details['promo_value']; ?></td>
                             </tr>
                             <?php }?>

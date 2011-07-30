@@ -24,8 +24,6 @@ $promo_log = $conn->osc_dbFetchResults("SELECT * FROM %st_promo_code_redeemed", 
                                         $odd_even = "even";
                                         $odd = 1;
                                     }
-                            	$conn   = getConnection();
-				$promo_code = $conn->osc_dbFetchResult("SELECT * FROM %st_promo_code WHERE id = '%d'", DB_TABLE_PREFIX, $logs['promo_code_id']);
 				
 				$user = User::newInstance()->findByPrimaryKey($logs['fk_i_user_id']);
                             ?>
@@ -34,7 +32,7 @@ $promo_log = $conn->osc_dbFetchResults("SELECT * FROM %st_promo_code_redeemed", 
                             	<td><?php echo $logs['id']; ?></td>
                             	<td><?php echo $logs['fk_i_user_id']; ?></td>
                             	<td><?php echo $user['s_name'];?></td>
-                            	<td><?php echo $promo_code['promo_code']; ?></td>
+                            	<td><?php echo $logs['promo_code_id']; ?></td>
                             	<td><?php echo $logs['date_redemed']; ?></td>
                             </tr>
                             <?php }?>
