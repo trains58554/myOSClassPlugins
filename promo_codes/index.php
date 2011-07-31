@@ -3,7 +3,7 @@
   Plugin Name: Promo Codes
   Plugin URI: http://www.osclass.org/
   Description: This plugin add promotion codes.
-  Version: 0.1
+  Version: 0.5
   Author: JChapman
   Author URI: http://forums.osclass.org/index.php?action=profile;u=1728
   Author Email: siouxfallsrummages@gmail.com
