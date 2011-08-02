@@ -1,7 +1,7 @@
 CREATE TABLE /*TABLE_PREFIX*/t_promo_code_redeemed (
     id INT(10) unsigned NOT NULL AUTO_INCREMENT,
     fk_i_user_id INT(10) UNSIGNED NOT NULL,
-    promo_code_id VARCHAR(10) UNSIGNED NOT NULL,
+    promo_code_id VARCHAR(10) NOT NULL,
     date_redemed TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
         PRIMARY KEY (id),
