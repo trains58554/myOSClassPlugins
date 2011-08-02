@@ -23,7 +23,7 @@
     if( Params::getParam('option') == 'stepone' ) {
         
         $conn = getConnection();
-        $conn->osc_dbExec("INSERT INTO %st_promo_code (enabled, promo_code, create_dates, max_uses, uses_remaining, promo_value) VALUES (%d, '%s', '%s', '%d', '%d', '%d')", DB_TABLE_PREFIX, $enabled, $promo, $createDate, $max_uses, $max_uses, $promo_value);
+        $conn->osc_dbExec("INSERT INTO %st_promo_code (enabled, promo_code, create_dates, max_uses, uses_remaining, promo_value) VALUES (%d, '%s', '%s', '%d', '%d', '%f')", DB_TABLE_PREFIX, $enabled, $promo, $createDate, $max_uses, $max_uses, $promo_value);
         
      	osc_add_flash_message(__('Promotion Code Created', 'promo'), 'admin');
      	// HACK TO DO A REDIRECT

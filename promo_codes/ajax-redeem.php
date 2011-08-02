@@ -15,7 +15,7 @@ $promocode = $_POST['promo_codes'];
 	    if($detail){
 	    	//check if the code has been used by this user
 	    	$conn   = getConnection();
-            	$promo_redeemed = $conn->osc_dbFetchResult("SELECT * FROM %st_promo_code_redeemed WHERE fk_i_user_id = '%d' AND promo_code_id = '%d'", DB_TABLE_PREFIX, osc_logged_user_id(), $detail['promo_code']);
+            	$promo_redeemed = $conn->osc_dbFetchResult("SELECT * FROM %st_promo_code_redeemed WHERE fk_i_user_id = '%d' AND promo_code_id = '%s'", DB_TABLE_PREFIX, osc_logged_user_id(), $detail['promo_code']);
             	//checks if the code has been used
             	if(!$promo_redeemed){
             		//checks if max uses is not set to 0

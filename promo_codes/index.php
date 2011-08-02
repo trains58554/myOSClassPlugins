@@ -48,7 +48,7 @@ $tableexist = table();
 	$conn->autocommit(false);
 		try {
         $conn->commit();
-        osc_set_preference('promo_reward_enabled', '1', 'plugin-promo', 'INTEGER');
+        osc_set_preference('promo_reward_enabled', '0', 'plugin-promo', 'INTEGER');
         osc_set_preference('promo_reward_amount', '5', 'plugin-promo', 'FLOAT');
     } catch (Exception $e) {
         $conn->rollback();

@@ -18,14 +18,10 @@
 
     if( Params::getParam('option') == 'stepone' ) {
         $dao_preference->update(array("s_value" => $reward_enabled), array("s_section" => "plugin-promo", "s_name" => "promo_reward_enabled")) ;
-        $dao_preference->update(array("s_value" => $reward_amount), array("s_section" =>"plugin-promo", "s_name" => "promo_reward")) ;
+        $dao_preference->update(array("s_value" => $reward_amount), array("s_section" =>"plugin-promo", "s_name" => "promo_reward_amount")) ;
         echo '<div style="text-align:center; font-size:22px; background-color:#00bb00;"><p>' . __('Settings Saved', 'promo') . '.</p></div>';
     }
-    unset($dao_preference) ;
-    
-if(OSCLASS_VERSION < '2.2'){
-	echo'this feature will be availble in when OSClass is released as version 2.2 stable';
-}else {    
+    unset($dao_preference) ; 
 ?>
 
 <form action="<?php osc_admin_base_url(true); ?>" method="post">
@@ -49,4 +45,4 @@ if(OSCLASS_VERSION < '2.2'){
      </fieldset>
     </div>
 </form>
-<?php } ?>
+

@@ -16,7 +16,7 @@ number_days VARCHAR( 10 ) ,
 create_dates VARCHAR( 10 ) ,
 max_uses int( 4 ) ,
 uses_remaining int( 4 ) ,
-promo_value DECIMAL( 6,2 ) ,
+promo_value FLOAT,
 PRIMARY KEY ( id )
 ) ENGINE = InnoDB DEFAULT CHARACTER SET 'UTF8' COLLATE 'UTF8_GENERAL_CI'
 
