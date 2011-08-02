@@ -1,11 +1,5 @@
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
-	margin: 0;
-	padding: 0;
-	border: 0 none;
-	outline: 0 none;
-	font-size: 100%;
-	vertical-align: baseline;
-	background: none repeat scroll 0 0 transparent;
+	margin: 0; padding: 0; border: 0 none; outline: 0 none; font-size: 100%; vertical-align: baseline; background: none repeat scroll 0 0 transparent;
 }
 
 ol, ul {
@@ -37,6 +31,11 @@ input:focus {
 	outline: medium none;
 }
 
+/* -- ERROR PAGES --------------------------------------- */
+.error { margin: 10px 0; padding: 20px 0; clear: both; }
+.error h1 { font-size: 2.5em; text-align: center; }
+
+/* -- GLOBAL STYLES --------------------------------------- */
 body {
 	color: #333333;
 	font: 12px Arial,Helvetica,Verdana,sans-serif;
@@ -62,19 +61,7 @@ option.pad {
 	width: 100%;
 }
 
-#FlashMessage {
-	background: none repeat scroll 0 0 #FF9900;
-	border-bottom: 2px solid #FF6600;
-	color: #FFFFFF;
-	display: none;
-	font-size: 18px;
-	left: 0;
-	padding: 20px 0;
-	position: fixed;
-	text-align: center;
-	top: 0;
-	width: 100%;
-}
+#FlashMessage { margin: 0;background:#F90; border-bottom:2px solid #F60; color:#FFF; display:none; font-size:18px; left:0; padding:20px 0; position:fixed; text-align: center; top:0; width:100%; }
 
 .FlashMessage.ok {
 	background: none repeat scroll 0 0 #9CDA9B;
@@ -888,9 +875,7 @@ option.pad {
 	width: 90%;
 }
 
-.list .filters .slider .ui-slider {
-	margin: 0 15px 0 8px;
-}
+.list .filters .slider .ui-slider { margin:0 15px 0 8px; position: relative;}
 
 .list .filters .slider .ui-widget-content {
 	background: none repeat scroll 0 0 #BDD7DF;
@@ -902,13 +887,7 @@ option.pad {
 	background: none repeat scroll 0 0 #FFFFFF;
 }
 
-.list .filters .slider .ui-slider-horizontal .ui-slider-handle {
-	background: none repeat scroll 0 0 #BAC8CD;
-	border-color: #9AAFB6;
-	height: 15px;
-	top: -0.5em;
-	width: 6px;
-}
+.list .filters .slider .ui-slider-horizontal .ui-slider-handle { background:#bac8cd; border-color:#9aafb6; height:15px; top: -0.5em; width:6px; position: absolute;}
 
 .list .filters .salary_range input {
 	margin-right: 3px;
@@ -1818,6 +1797,17 @@ label.recaptcha_input_area_text {
 	float: none;
 }
 
+/*
+Uniform Theme: Uniform Default
+Version: 1.6
+By: Josh Pyles
+License: MIT License
+---
+For use with the Uniform plugin:
+http://pixelmatrixdesign.com/uniform/
+*/
+
+/* Select */
 div.selector {
 	border: 1px solid #B4B4B4;
 	line-height: 26px;
@@ -2181,3 +2171,43 @@ div.uploader input {
 	color: #FEFEFE;
 }
 
+.premium_odd {
+    background-color: #E9F5F9;
+}
+
+.premium_even {
+    background-color: #d7eaf0;
+}
+
+.ui-menu {
+	list-style:none;
+	padding: 2px;
+	margin: 0;
+	display:block;
+	float: left;
+    
+    background-color: #fefefe;
+}
+.ui-menu .ui-menu {
+	margin-top: -3px;
+}
+.ui-menu .ui-menu-item {
+	margin:0;
+	padding: 0;
+	zoom: 1;
+	float: left;
+	clear: left;
+	width: 100%;
+}
+.ui-menu .ui-menu-item a {
+	text-decoration:none;
+	display:block;
+	padding:.2em .4em;
+	line-height:1.5;
+	zoom:1;
+}
+.ui-menu .ui-menu-item a.ui-state-hover,
+.ui-menu .ui-menu-item a.ui-state-active {
+	font-weight: normal;
+	margin: -1px;
+}

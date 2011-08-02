@@ -21,7 +21,7 @@
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<?php echo str_replace('_', '-', osc_current_user_locale()); ?>">
     <head>
         <?php osc_current_web_theme_path('head.php') ; ?>
         <?php if(osc_count_items() == 0) { ?>
@@ -74,33 +74,6 @@
                 </div>
                 <div id="sidebar">
                     <div class="filters">
-                    <?php $spubcat = get_categoriesHierarchy(); ?>
-                    	<?php if (!isset($spubcat[2]) && !isset($spubcat[1]) && isset($spubcat[0])){ ?>
-                    		<h2><strong> <?php _e('<a href="' . $spubcat[0]["url"] . '">' .  $spubcat[0]["s_name"] . '</a> (' . get_category_num_items($spubcat[0]) . ')' , 'modern') ; ?> </strong></h2><?php ;
-                    		 echo '<ul>';
-                    		 foreach(get_subcategories() as $subcat) {
-					
-					echo "<li><h3><strong><a href='".$subcat["url"]."'>".$subcat["s_name"]."</a> (" . get_category_num_items($subcat) . ")</strong></h3></li>";
-				 }
-				 echo '</ul>';
-                    		 }  
-                    	elseif (!isset($spubcat[2]) && isset($spubcat[1]) && isset($spubcat[0])) { ?>
-                    		<h1><strong> <?php _e('<a href="' . $spubcat[1]["url"] . '">' .  $spubcat[1]["s_name"] . '</a> (' . get_category_num_items($spubcat[1]) . ')' , 'modern') ; ?> </strong></h1>
-                    		<ul>
-                    		<li><h2><strong> <?php _e('<a href="' . $spubcat[0]["url"] . '">' .  $spubcat[0]["s_name"] . '</a> (' . get_category_num_items($spubcat[0]) . ')' , 'modern') ; ?> </strong></h2></li></ul><?php ; 
-                    		echo '<ul>';
-                    		 foreach(get_subcategories() as $subcat) {
-					
-					echo "<li class='lastchild'><h4><strong><a href='".$subcat["url"]."'>".$subcat["s_name"]."</a> (" . get_category_num_items($subcat) . ")</strong></h4></li>";
-				 }
-				 echo '</ul>';
-                    		}
-                    	else { ?>
-                    	<?php if (isset($spubcat[2])){ ?> <h1><strong> <?php _e('<a href="' . $spubcat[2]["url"] . '">' .  $spubcat[2]["s_name"] . '</a> (' . get_category_num_items($spubcat[2]) . ')' , 'modern') ; ?> </strong></h1><?php ; } ?>
-                    	<ul>
-                    	<?php if (isset($spubcat[1])){ ?> <li><h2><strong> <?php _e('<a href="' . $spubcat[1]["url"] . '">' .  $spubcat[1]["s_name"] . '</a> (' . get_category_num_items($spubcat[1]) . ')' , 'modern') ; ?> </strong></h2></li><?php ; } ?>
-                    	<?php if (isset($spubcat[0])){ ?> <li class="lastchild"><h4><strong> <?php _e('<a href="' . $spubcat[0]["url"] . '">' .  $spubcat[0]["s_name"] . '</a> (' . get_category_num_items($spubcat[0]) . ')' , 'modern') ; ?> </strong></h4></li><?php ; } ?>
-                    	<?php } ?>
                         <form action="<?php echo osc_base_url(true); ?>" method="get" onSubmit="return checkEmptyCategories()">
                             <input type="hidden" name="page" value="search" />
                             <fieldset class="box location">
@@ -145,7 +118,7 @@
                                             <?php osc_goto_first_category() ; ?>
                                             <?php while(osc_has_categories()) { ?>
                                                 <li>
-                                                    <input type="checkbox" name="sCategory[]" id="sCategory" value="<?php echo osc_category_id(); ?>" <?php echo ( (in_array(osc_category_id(), osc_search_category())  || in_array(osc_category_slug()."/", osc_search_category()) || count(osc_search_category())==0 )  ? 'checked' : '') ; ?> /> <label for="cat<?php echo osc_category_id(); ?>"><strong><?php echo osc_category_name(); ?></strong></label>
+                                                    <input type="checkbox" id="cat<?php echo osc_category_id(); ?>" name="sCategory[]" value="<?php echo osc_category_id(); ?>" <?php echo ( (in_array(osc_category_id(), osc_search_category())  || in_array(osc_category_slug()."/", osc_search_category()) || count(osc_search_category())==0 )  ? 'checked' : '') ; ?> /> <label for="cat<?php echo osc_category_id(); ?>"><strong><?php echo osc_category_name(); ?></strong></label>
                                                 </li>
                                             <?php } ?>
                                         </ul>
@@ -185,7 +158,7 @@
                     });
                     
                     function checkEmptyCategories() {
-                        var n = $("#sCategory:checked").length;
+                        var n = $("input[id*=cat]:checked").length;
                         if(n>0) {
                             return true;
                         } else {
