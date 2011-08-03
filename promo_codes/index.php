@@ -130,7 +130,10 @@ $tableexist = table();
 });
     </script>  ';
     }
-
+    function promo_user_delete($userId){
+    $conn   = getConnection();
+    $conn->osc_dbExec("DELETE FROM %st_promo_code_redeemed WHERE fk_i_user_id='%d'", DB_TABLE_PREFIX, $userId);
+    }
     // This is needed in order to be able to activate the plugin
     osc_register_plugin(osc_plugin_path(__FILE__), 'promo_call_after_install') ;
 
@@ -139,6 +142,9 @@ $tableexist = table();
 
     // This is a hack to show a Configure link at plugins table (you could also use some other hook to show a custom option panel)
     osc_add_hook(osc_plugin_path(__FILE__) . '_configure', 'promo_config') ;
+    
+    // Add hook for user deleted
+    osc_add_hook('delete_user', 'promo_user_delete');
     
     // checks if paypal_wallet table exists
     $tableexist = table();
