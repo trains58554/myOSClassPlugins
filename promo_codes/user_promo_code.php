@@ -1,4 +1,6 @@
 <?php include('ajax-redeem.php'); ?>
+<?php if( osc_is_web_user_logged_in() ) { ?>
+
 <div class="content user_account">
     <h1>
         <strong><?php _e('Promotion Code', 'promo'); ?></strong>
@@ -15,3 +17,7 @@
      <span id="promo-message"></span>
      </div>
 </div>
+<?php } else { 
+// HACK TO DO A REDIRECT ?>
+    	<script>location.href="<?php echo osc_user_login_url(); ?>"</script>
+<?php } ?>
