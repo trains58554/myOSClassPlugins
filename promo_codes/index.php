@@ -24,7 +24,7 @@
 $tableexist = table();
 
     function promo_user_menu() {
-        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'user_promo_code.php') . '" >' . __('Enter Promotion Codes', 'promo') . '</a></li>' ;
+        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'promo_code.php') . '" >' . __('Enter Promotion Codes', 'promo') . '</a></li>' ;
     }
        
     function promo_admin_menu() {
