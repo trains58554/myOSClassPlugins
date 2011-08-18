@@ -86,7 +86,7 @@ $tableexist = table();
 	function osc_promo_reward_amount() {
         return(osc_get_preference('promo_reward_amount', 'plugin-promo')) ;
     }
-    
+
     //user reward
     function user_reward($userId) {
     	$reward_enabled = (osc_promo_reward_enabled() != '') ? osc_promo_reward_enabled() : '' ;
