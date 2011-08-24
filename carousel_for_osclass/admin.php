@@ -24,10 +24,19 @@
         $scrolldelay = (osc_carousel_scrolldelay() != '') ? osc_carousel_scrolldelay() : '' ;
     }
     
+    $premOnly            = '';
+    $dao_preference = new Preference();
+    if(Params::getParam('premiumOnly') != '') {
+        $premOnly = Params::getParam('premiumOnly');
+    } else {
+        $premOnly = (osc_carousel_premiumOnly() != '') ? osc_carousel_premiumOnly() : '' ;
+    }
+    
     if( Params::getParam('option') == 'stepone' ) {
         $dao_preference->update(array("s_value" => $item), array("s_section" => "plugin-carousel_for_osclass", "s_name" => "carousel_items")) ;
         $dao_preference->update(array("s_value" => $autosp), array("s_section" =>"plugin-carousel_for_osclass", "s_name" => "carousel_autoscroll")) ;
         $dao_preference->update(array("s_value" => $scrolldelay), array("s_section" =>"plugin-carousel_for_osclass", "s_name" => "carousel_scrolldelay")) ;
+        $dao_preference->update(array("s_value" => $premOnly), array("s_section" =>"plugin-carousel_for_osclass", "s_name" => "carousel_premiumOnly")) ;
         echo '<div style="text-align:center; font-size:22px; background-color:#00bb00;"><p>' . __('Settings Saved', 'carousel') . '.</p></div>';
     }
     unset($dao_preference) ;
@@ -58,6 +67,12 @@
         <label for="scrolldelay" style="font-weight: bold;"><?php _e('Number of seconds to delay scrolling (Default is 2800) ', 'carousel'); ?></label>:<br />
         <input type="text" name="scrolldelay" id="scrolldelay" value="<?php echo $scrolldelay; ?>" />
         <?php } ?>
+        <br />
+        <label for="premiumOnly" style="font-weight: bold;"><?php _e('Display premium ads only','carousel'); ?></label>:<br />
+        <select name="premiumOnly" id="premiumOnly">
+        	<option <?php if($premOnly ==0){echo 'selected="selected"';}?> value='0'><?php _e('No', 'carousel'); ?></option>
+        	<option <?php if($premOnly ==1){echo 'selected="selected"';}?> value='1'><?php _e('Yes', 'carousel'); ?></option>
+        </select>
         <br />
         <br />
         <input type="submit" value="<?php _e('Save', 'carousel'); ?>" />

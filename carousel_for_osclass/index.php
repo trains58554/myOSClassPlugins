@@ -20,6 +20,7 @@ Plugin update URI:
         osc_set_preference('carousel_items', '4', 'plugin-carousel_for_osclass', 'INTEGER');
         osc_set_preference('carousel_autoscroll', '1', 'plugin-carousel_for_osclass', 'BOOLEAN');
 	osc_set_preference('carousel_scrolldelay', '2800','plugin-carousel_for_osclass','INTEGER');
+	osc_set_preference('carousel_premiumOnly', '0','plugin-carousel_for_osclass','INTEGER');
     } catch (Exception $e) {
         $conn->rollback();
         echo $e->getMessage();
@@ -37,6 +38,7 @@ Plugin update URI:
 				osc_delete_preference('carousel_items', 'plugin-carousel_for_osclass');
                 		osc_delete_preference('carousel_autoscroll', 'plugin-carousel_for_osclass');
                 		osc_delete_preference('carousel_scrolldelay', 'plugin-carousel_for_osclass');
+                		osc_delete_preference('carousel_premiumOnly', 'plugin-carousel_for_osclass');
 			}   catch (Exception $e) {
 				$conn->rollback();
 				echo $e->getMessage();
@@ -62,6 +64,10 @@ Plugin update URI:
     
     function osc_carousel_scrolldelay() {
         return(osc_get_preference('carousel_scrolldelay', 'plugin-carousel_for_osclass')) ;
+    }
+    
+    function osc_carousel_premiumOnly() {
+        return(osc_get_preference('carousel_premiumOnly', 'plugin-carousel_for_osclass')) ;
     }
     
     // Self-explanatory
