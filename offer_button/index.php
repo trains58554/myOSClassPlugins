@@ -11,15 +11,15 @@
   Plugin update URI: http://www.osclass.org/
  */
     function offer_user_menu() {
-        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'promo_code.php') . '" >' . __('View Offers', 'offer_button') . '</a></li>' ;
+        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offer_button.php') . '" >' . __('View Offers', 'offer_button') . '</a></li>' ;
     }
        
-    function promo_admin_menu() {
+    function offer_admin_menu() {
    	 echo '<h3><a href="#">Offer Button</a></h3><ul>';
    	    	 	 
-        echo '<li class="" ><a href="' . osc_admin_render_plugin_url('promo_codes/user_reward.php') . '" >&raquo; ' . __('Offer Button Config', 'offer_button') . '</a></li>' .
-        '<li class="" ><a href="' . osc_admin_render_plugin_url('promo_codes/admin_list.php') . '" >&raquo; ' . __('View Offers', 'offer_button') . '</a></li>' . 
-        '<li class="" ><a href="' . osc_admin_render_plugin_url('promo_codes/help.php') . '" >&raquo; ' . __('F.A.Q. / Help', 'offer_button') . '</a></li>';
+        echo '<li class="" ><a href="' . osc_admin_render_plugin_url('offer_button/user_reward.php') . '" >&raquo; ' . __('Offer Button Config', 'offer_button') . '</a></li>' .
+        '<li class="" ><a href="' . osc_admin_render_plugin_url('offer_button/admin_list.php') . '" >&raquo; ' . __('View Offers', 'offer_button') . '</a></li>' . 
+        '<li class="" ><a href="' . osc_admin_render_plugin_url('offer_button/help.php') . '" >&raquo; ' . __('F.A.Q. / Help', 'offer_button') . '</a></li>';
         echo '</ul>';
     }
            
@@ -33,7 +33,7 @@
 	$conn->autocommit(false);
 		try {
         $conn->commit();
-        osc_set_preference('offer_button_enabled', '0', 'plugin-offer', 'INTEGER');
+        osc_set_preference('offer_button_enabled', '1', 'plugin-offer', 'INTEGER');
     } catch (Exception $e) {
         $conn->rollback();
         echo $e->getMessage();
@@ -43,8 +43,8 @@
 
     function offer_call_after_uninstall() {
         $conn = getConnection() ;
-        $conn->osc_dbExec('DROP TABLE %st_promo_code', DB_TABLE_PREFIX) ;
-        $conn->osc_dbExec('DROP TABLE %st_promo_code_redeemed', DB_TABLE_PREFIX) ;
+        $conn->osc_dbExec('DROP TABLE %st_offer_button', DB_TABLE_PREFIX) ;
+        //$conn->osc_dbExec('DROP TABLE %st_promo_code_redeemed', DB_TABLE_PREFIX) ;
         
         $conn = getConnection();
 		 $conn->autocommit(false);
@@ -62,23 +62,46 @@
         osc_admin_render_plugin(osc_plugin_path(dirname(__FILE__)) . '/help.php') ;
     }
     
+    function offer_button() {
+    	?>
+    	<a id="inline" href='#login_form'>offer</a>
+    	<div style="display:none">
+	<form id="login_form" method="post" action="">
+	    	<p id="login_error">Please, enter data</p>
+		<p>
+			<label for="login_name">Login: </label>
+			<input type="text" id="login_name" name="login_name" size="30" />
+		</p>
+		<p>
+			<label for="login_pass">Password: </label>
+			<input type="password" id="login_pass" name="login_pass" size="30" />
+		</p>
+		<p>
+			<input type="submit" value="Login" />
+		</p>
+		<p>
+		    <em>Leave empty so see resizing</em>
+		</p>
+	</form>
+</div> <?php
+    }
     // HELPER
     function osc_offer_button_enabled() {
         return(osc_get_preference('offer_button_enabled', 'plugin-offer')) ;
     }
        
-    function promo_config() {
-    	osc_admin_render_plugin('promo_codes/admin_list.php') ;    
+    function offer_config() {
+    	osc_admin_render_plugin('offer_button/admin_list.php') ;    
     }
-    // Promo code js
-    function promo_js(){
+    // Offer button js
+    function offer_js(){
     echo "\n";
-    echo '<!-- promo_code js -->
+    echo '<!-- offer_button js -->
     <script type="text/javascript">  
     $(document).ready(function(){
     $("#promo-code-form").submit(function(){
         $.post(
-            "' . osc_ajax_plugin_url("promo_codes/ajax-redeem.php") . '",
+            "' . osc_ajax_plugin_url("offer_button/ajax-redeem.php") . '",
             $("#promo-code-form").serialize(),
             function(data){
                 if (data.success){
@@ -97,42 +120,34 @@
 });
     </script>  ';
     }
-    function promo_user_delete($userId){
+    function offer_user_delete($userId){
     $conn   = getConnection();
-    $conn->osc_dbExec("DELETE FROM %st_promo_code_redeemed WHERE fk_i_user_id='%d'", DB_TABLE_PREFIX, $userId);
+    $conn->osc_dbExec("DELETE FROM %st_offer_button WHERE fk_i_user_id='%d'", DB_TABLE_PREFIX, $userId);
     }
     // This is needed in order to be able to activate the plugin
-    osc_register_plugin(osc_plugin_path(__FILE__), 'promo_call_after_install') ;
+    osc_register_plugin(osc_plugin_path(__FILE__), 'offer_call_after_install') ;
 
     // This is a hack to show a Uninstall link at plugins table (you could also use some other hook to show a custom option panel)
-    osc_add_hook(osc_plugin_path(__FILE__) . '_uninstall', 'promo_call_after_uninstall') ;
+    osc_add_hook(osc_plugin_path(__FILE__) . '_uninstall', 'offer_call_after_uninstall') ;
 
     // This is a hack to show a Configure link at plugins table (you could also use some other hook to show a custom option panel)
-    osc_add_hook(osc_plugin_path(__FILE__) . '_configure', 'promo_config') ;
+    osc_add_hook(osc_plugin_path(__FILE__) . '_configure', 'offer_config') ;
     
     // Add hook for user deleted
-    osc_add_hook('delete_user', 'promo_user_delete');
+    osc_add_hook('delete_user', 'offer_user_delete');
     
     // checks if paypal_wallet table exists
     $tableexist = table();
     if($tableexist){
     // Add link in user menu page
-    osc_add_hook('user_menu', 'promo_user_menu') ;
+    osc_add_hook('user_menu', 'offer_user_menu') ;
     }
     // Add link in admin menu page
-    osc_add_hook('admin_menu', 'promo_admin_menu') ;
+    osc_add_hook('admin_menu', 'offer_admin_menu') ;
     // add javascript
-    osc_add_hook('header', 'promo_js') ;
+    osc_add_hook('header', 'offer_js') ;
     
-    if(OSCLASS_VERSION >= '2.2'){
-    // checks if paypal_wallet table exists
-    $tableexist = table();
-    if($tableexist){
     // add user_reward to user register completed
     osc_add_hook('user_register_completed', 'user_reward');
-    }
-    }
-
-
 
 ?>
