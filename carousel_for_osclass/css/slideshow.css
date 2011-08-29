@@ -1,6 +1,6 @@
 /* content */
 
-#carousel { clear:both; float:left; margin:5px 0 0 0; padding:0 0 5px 0; position: relative; width:700px; }
+#carousel { clear:both; float:left; margin:5px 0 0 0; padding:0 0 5px 0; position: relative; width:700px; direction:ltr;}
 .shadowblock_out { margin:0 0 0 0; border:1px solid #bbb; -khtml-border-radius: 6px; background-color:#E9F5F9 ; background-position:top; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; 
 /* overflow:hidden; */}
 .shadowblock { padding:10px; background-color:#E9F5F9 ; background-repeat: repeat-x; background-position:top; border:1px solid #fff; -khtml-border-radius: 6px; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px;}
