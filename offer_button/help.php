@@ -25,25 +25,19 @@
         <div>
             <fieldset>
                 <legend>
-                    <h1><?php _e('Promo Codes Help', 'promo'); ?></h1>
+                    <h1><?php _e('Offer Button Help', 'offer_button'); ?></h1>
                 </legend>
                 <h2>
-                    <?php _e('What is Promo Codes Plugin?', 'promo'); ?>
+                    <?php _e('What is the Offer Button Plugin?', 'offer_button'); ?>
                 </h2>
                 <p>
-                    <?php _e('The Promo Codes Plugin is a great plugin for rewarding your users.', 'promo'); ?>
+                    <?php _e('The Offer Button Plugin creates a new and quicker way for buyers to submit offers to the seller.', 'offer_button'); ?>
                 </p>
                 <h2>
-                    <?php _e('Does this plugin require any other plugin to be installed?','promo'); ?>
+                    <?php _e('How does Offer Button plugin work?', 'offer_button'); ?>
                 </h2>
                 <p>
-                    <?php _e('Yes this plugin requires that the paypal plugin is installed.','promo'); ?>
-                </p>
-                <h2>
-                    <?php _e('How does Promo Codes plugin work?', 'promo'); ?>
-                </h2>
-                <p>
-                    <?php _e('You create codes that you give out to your users to enter into your site and they recive credits to there account.', 'promo'); ?>
+                    <?php _e('This plugin places a button on items that the user wants to accept offers on. Then the user can easly submit his/her offer to the seller.', 'offer_button'); ?>
                 </p>
             </fieldset>
         </div>

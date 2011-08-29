@@ -2,7 +2,7 @@
 /*
   Plugin Name: Offer Button
   Plugin URI: http://www.osclass.org/
-  Description: This plugin adds the functions of a offer button.
+  Description: This plugin extends a category of items to display an offer button.
   Version: 0.1
   Author: JChapman
   Author URI: http://forums.osclass.org/index.php?action=profile;u=1728
@@ -11,14 +11,14 @@
   Plugin update URI: http://www.osclass.org/
  */
     function offer_user_menu() {
-        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offer_button.php') . '" >' . __('View Offers', 'offer_button') . '</a></li>' ;
+        echo '<lo class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offer_byItem.php') . '" >' . __('View Offers on Your Items', 'offer_button') . '</a></li>';
+        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offer_button.php') . '" >' . __('View Your Submmited Offers', 'offer_button') . '</a></li>' ;
     }
        
     function offer_admin_menu() {
    	 echo '<h3><a href="#">Offer Button</a></h3><ul>';
    	    	 	 
-        echo '<li class="" ><a href="' . osc_admin_render_plugin_url('offer_button/user_reward.php') . '" >&raquo; ' . __('Offer Button Config', 'offer_button') . '</a></li>' .
-        '<li class="" ><a href="' . osc_admin_render_plugin_url('offer_button/admin_list.php') . '" >&raquo; ' . __('View Offers', 'offer_button') . '</a></li>' . 
+        echo '<li class="" ><a href="' . osc_admin_render_plugin_url('offer_button/offer_config.php') . '" > &raquo; '. __('Configure', 'offer_button') . '</a></li>' .
         '<li class="" ><a href="' . osc_admin_render_plugin_url('offer_button/help.php') . '" >&raquo; ' . __('F.A.Q. / Help', 'offer_button') . '</a></li>';
         echo '</ul>';
     }
@@ -44,7 +44,7 @@
     function offer_call_after_uninstall() {
         $conn = getConnection() ;
         $conn->osc_dbExec('DROP TABLE %st_offer_button', DB_TABLE_PREFIX) ;
-        //$conn->osc_dbExec('DROP TABLE %st_promo_code_redeemed', DB_TABLE_PREFIX) ;
+        $conn->osc_dbExec('DROP TABLE %st_offer_item_options', DB_TABLE_PREFIX) ;
         
         $conn = getConnection();
 		 $conn->autocommit(false);
@@ -63,27 +63,32 @@
     }
     
     function offer_button() {
+    	$conn = getConnection() ;
+	$detail = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_item_options WHERE fk_i_item_id = %d", DB_TABLE_PREFIX, osc_item_id());
+ 	if (osc_is_web_user_logged_in()){
+ 	if ($detail['b_offerYes'] == 1){
     	?>
-    	<a id="inline" href='#login_form'>offer</a>
+    	
+    	<a id="inline" href='#offer_form' rel='inline'>offer</a>
     	<div style="display:none">
-	<form id="login_form" method="post" action="">
-	    	<p id="login_error">Please, enter data</p>
+	<form id="offer_form" method="post"  onsubmit="return false;" >
+		<input type="hidden" id="user_id" name="user_id" value="<?php echo osc_logged_user_id(); ?>" />
+		<input type="hidden" id="seller_id" name="seller_id" value="<?php echo osc_item_user_id(); ?>" />
+		<input type="hidden" id="item_id" name="item_id" value="<?php echo osc_item_id(); ?>" />
+		
+	    	<span id="offer-message"></span>
+	    	<p><h3><?php _e('Please enter a your offer','offer_button'); ?></h3></p>
 		<p>
-			<label for="login_name">Login: </label>
-			<input type="text" id="login_name" name="login_name" size="30" />
+			<label for="offer"><?php _e('Offer','offer_button'); ?>: </label>
+			<input type="text" id="offer" name="offer" size="10" />
 		</p>
 		<p>
-			<label for="login_pass">Password: </label>
-			<input type="password" id="login_pass" name="login_pass" size="30" />
-		</p>
-		<p>
-			<input type="submit" value="Login" />
-		</p>
-		<p>
-		    <em>Leave empty so see resizing</em>
+			<input type="submit" value="<?php _e('Submit Offer','offer_button'); ?>" />
 		</p>
 	</form>
-</div> <?php
+	</div> <?php
+	}
+	}
     }
     // HELPER
     function osc_offer_button_enabled() {
@@ -91,39 +96,150 @@
     }
        
     function offer_config() {
-    	osc_admin_render_plugin('offer_button/admin_list.php') ;    
+    	// Standard configuration page for plugin which extend item's attributes
+	osc_plugin_configure_view(__FILE__);
     }
     // Offer button js
     function offer_js(){
     echo "\n";
     echo '<!-- offer_button js -->
-    <script type="text/javascript">  
-    $(document).ready(function(){
-    $("#promo-code-form").submit(function(){
-        $.post(
-            "' . osc_ajax_plugin_url("offer_button/ajax-redeem.php") . '",
-            $("#promo-code-form").serialize(),
-            function(data){
+    	<script type="text/javascript">
+     		$(document).ready(function() {
+          	$("a[rel=inline]").fancybox({
+          		"overlayOpacity"	:	0.5,
+			"overlayColor"		:	"black",
+			"overlayShow"		:	true,
+			"onClosed" 		:	function() {
+				$("span#offer-message").html("")}
+			
+          	})
+     	     });
+     	     
+	     $(document).ready(function(){
+    	     $("#offer_form").bind("submit", function(){
+
+		if ($("#offer").val().length < 1) {
+		    $("span#offer-message").css({"color":"red"});
+                    $("span#offer-message").css({"font-size":"20px"} );
+                    $("span#offer-message").html("Please enter a number");
+		    $.fancybox.resize();
+		    return false;
+		}
+
+		$.fancybox.showActivity();
+
+        		$.post(
+		            "' . osc_ajax_plugin_url("offer_button/ajax-offer.php") . '",
+        		    $("#offer_form").serialize(),
+        		    function(data){
                 if (data.success){
-                    $("span#promo-message").css({"color":"green"} );
-                    $("span#promo-message").css({"font-size":"20px"} );
+                  $("span#offer-message").html(" ");
+                  $("#offer").value="";
+                  $.fancybox("<h1 style=\"font-size: 14px;\">" + data.message + "</h1>");
+                  document.getElementById("offer").value = "";  
                 }
                 else{
-                    $("span#promo-message").css({"color":"red"});
-                    $("span#promo-message").css({"font-size":"20px"} );
+                    $.fancybox.hideActivity();
+                    $("span#offer-message").css({"color":"red"});
+                    $("span#offer-message").css({"font-size":"20px"} );
+                    $("span#offer-message").html(data.message);
+                    document.getElementById("offer").value = "";
+                    $.fancybox.resize();
                 }
-                $("span#promo-message").html(data.message);
-            },
-            "json"
-        );
-    });
-});
-    </script>  ';
+                
+        		    },
+        		    "json"
+        		);
+    		});
+		});
+	</script>';
+	   
     }
+    
+    function offer_css() {
+    	echo "\n";
+    	echo '<!-- offer_button css -->
+    	<link href="./oc-content/plugins/offer_button/css/demo_table.css" rel="stylesheet" type="text/css" />';
+    }
+    
+    function offer_status($offerSt){
+    	if ($offerSt == 1) {
+    		return __('Accepted','offer_button');
+    	}
+    	elseif($offerSt == 2) {
+    		return __('Pending...','offer_button');
+    	}
+    	else {
+    		return __('Declined','offer_button');
+    	}
+    
+    }
+    
+    function offer_form($catId = '') {
+    $conn = getConnection() ;
+    // We received the categoryID
+	if($catId!="") {
+		// We check if the category is the same as our plugin
+		if(osc_is_this_category('offer', $catId)) {
+			require_once('form.php');
+		}
+	}
+    }
+    
+    function offer_form_post($catId = null, $item_id = null) {
+    $conn = getConnection() ;
+	// We received the categoryID and the Item ID
+	if($catId!=null) {
+		// We check if the category is the same as our plugin
+		if(osc_is_this_category('offer', $catId) && $item_id!=null) {
+				// Insert the data in our plugin's table
+                    $conn->osc_dbExec("INSERT INTO %st_offer_item_options (fk_i_item_id, b_offerYes) VALUES (%d, %d)",
+						DB_TABLE_PREFIX,
+						$item_id,
+						(Params::getParam("offerYes")!='') ? 1 : 0
+					);
+		}
+	}
+    }
+    
+    // Self-explanatory
+    function offer_item_edit($catId = null, $item_id = null) {
+    	$conn = getConnection() ;
+    	if(osc_is_this_category('offer', $catId)) {
+		    $detail = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_item_options WHERE fk_i_item_id = %d", DB_TABLE_PREFIX, $item_id);
+
+		    require_once 'item_edit.php';
+    	}
+    }
+    
+    function offer_item_edit_post($catId = null, $item_id = null) {
+	// We received the categoryID and the Item ID
+	if($catId!=null) 
+	{
+		// We check if the category is the same as our plugin
+		if(osc_is_this_category('offer', $catId))
+		{
+			$conn = getConnection() ;
+			// Insert the data in our plugin's table
+            $conn->osc_dbExec("REPLACE INTO %st_offer_item_options (fk_i_item_id, b_offerYes) VALUES (%d, %d)",
+				DB_TABLE_PREFIX,
+				$item_id,
+				(Params::getParam("offerYes")!='') ? 1 : 0
+			);
+		}
+	}
+    }
+    
     function offer_user_delete($userId){
-    $conn   = getConnection();
-    $conn->osc_dbExec("DELETE FROM %st_offer_button WHERE fk_i_user_id='%d'", DB_TABLE_PREFIX, $userId);
+    	$conn   = getConnection();
+    	$conn->osc_dbExec("DELETE FROM %st_offer_button WHERE user_id='%d'", DB_TABLE_PREFIX, $userId);
     }
+    
+    function offer_item_delete($id){
+    	$conn   = getConnection();
+    	$conn->osc_dbExec("DELETE FROM %st_offer_button WHERE item_id='%d'", DB_TABLE_PREFIX, $id);
+    }
+    
     // This is needed in order to be able to activate the plugin
     osc_register_plugin(osc_plugin_path(__FILE__), 'offer_call_after_install') ;
 
@@ -136,18 +252,31 @@
     // Add hook for user deleted
     osc_add_hook('delete_user', 'offer_user_delete');
     
-    // checks if paypal_wallet table exists
-    $tableexist = table();
-    if($tableexist){
+    // Add hook for item deleted
+    osc_add_hook('delete_item', 'offer_item_delete');
+    
     // Add link in user menu page
     osc_add_hook('user_menu', 'offer_user_menu') ;
-    }
+   
     // Add link in admin menu page
     osc_add_hook('admin_menu', 'offer_admin_menu') ;
-    // add javascript
-    osc_add_hook('header', 'offer_js') ;
     
-    // add user_reward to user register completed
-    osc_add_hook('user_register_completed', 'user_reward');
+    // add javascript
+    osc_add_hook('item_detail', 'offer_js') ;
+    
+    // hook for header
+    osc_add_hook('header', 'offer_css');
+    
+    // When publishing an item we show an extra form with more attributes
+    osc_add_hook('item_form', 'offer_form');
+    
+    // To add that new information to our custom table
+    osc_add_hook('item_form_post', 'offer_form_post');
+    
+    // Edit an item special attributes
+    osc_add_hook('item_edit', 'offer_item_edit');
+
+    // Edit an item special attributes POST
+    osc_add_hook('item_edit_post', 'offer_item_edit_post');
 
 ?>
