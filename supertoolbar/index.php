@@ -41,20 +41,43 @@ function supertoolbar_show() {
     if(!empty($toolbar_opts)) {
 ?>
     
-    <link href="<?php echo osc_base_url()."oc-content/plugins/".osc_plugin_folder(__FILE__)."style.css"; ?>" rel="stylesheet" type="text/css" />
+    <link href="<?php echo osc_base_url()."oc-content/plugins/".osc_plugin_folder(__FILE__)."css/style.css"; ?>" rel="stylesheet" type="text/css" />
+    <!--[if lte IE 7]>
+    <link href="<?php echo osc_base_url()."oc-content/plugins/".osc_plugin_folder(__FILE__)."css/fixed4ie.css"; ?>" rel="stylesheet" type="text/css">
+    <script type="text/javascript">onload = function() { content.focus() }</script>
+    <![endif]--> 
+    <script type='text/javascript'>
+  	//$(function() {
+  	//$('#supertoolbar_toolbar').css({height: 0}).animate({ height: '38' }, 'slow');
+  	//});
+    </script>
+    
     <div id="supertoolbar_toolbar" name="supertoolbar_toolbar">
-        <?php echo implode(" | ", $toolbar_opts);?>
+        <ul class="gallery clearfix">
+        <?php foreach( $toolbar_opts as $toolbar_opt){
+        echo '<li>' . $toolbar_opt . '</li>';
+        }
+        ?>
+        </ul>
     </div>
 <?php
     }
 }
 
+function footer_content(){
+	?>
+	<div id="content">&nbsp;</div>
+	<?php
+}
+
+
 // This is needed in order to be able to activate the plugin
 osc_register_plugin(osc_plugin_path(__FILE__), '');
 // This is a hack to show a Configure link at plugins table (you could also use some other hook to show a custom option panel)
-osc_add_hook(osc_plugin_path(__FILE__)."_configure", '');
+//osc_add_hook(osc_plugin_path(__FILE__)."_configure", '');
 // This is a hack to show a Uninstall link at plugins table (you could also use some other hook to show a custom option panel)
 osc_add_hook(osc_plugin_path(__FILE__)."_uninstall", '');
 
-osc_add_hook("footer", "supertoolbar_show");
+osc_add_hook("header", "supertoolbar_show");
+osc_add_hook("footer", "footer_content");
 ?>
