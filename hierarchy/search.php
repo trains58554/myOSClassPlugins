@@ -21,7 +21,7 @@
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="<?php echo str_replace('_', '-', osc_current_user_locale()); ?>">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US">
     <head>
         <?php osc_current_web_theme_path('head.php') ; ?>
         <?php if(osc_count_items() == 0) { ?>
@@ -41,10 +41,10 @@
                         <div id="list_head">
                             <div class="inner">
                                 <h1>
-                                    <strong><?php _e('Search results', 'modern') ; ?></strong>
+                                    <strong><?php _e('Search results', 'hierarchy') ; ?></strong>
                                 </h1>
                                 <p class="see_by">
-                                    <?php _e('Sort by', 'modern'); ?>:
+                                    <?php _e('Sort by', 'hierarchy'); ?>:
                                     <?php $i = 0 ; ?>
                                     <?php $orders = osc_list_orders();
                                     foreach($orders as $label => $params) {
@@ -63,7 +63,7 @@
                             </div>
                         </div>
                         <?php if(osc_count_items() == 0) { ?>
-                            <p class="empty" ><?php printf(__('There are no results matching "%s"', 'modern'), osc_search_pattern()) ; ?></p>
+                            <p class="empty" ><?php printf(__('There are no results matching "%s"', 'hierarchy'), osc_search_pattern()) ; ?></p>
                         <?php } else { ?>
                             <?php require(osc_search_show_as() == 'list' ? 'search_list.php' : 'search_gallery.php') ; ?>
                         <?php } ?>
@@ -74,51 +74,78 @@
                 </div>
                 <div id="sidebar">
                     <div class="filters">
+                    <?php $spubcat = get_categoriesHierarchy(); ?>
+                    	<?php if (!isset($spubcat[2]) && !isset($spubcat[1]) && isset($spubcat[0])){ ?>
+                    		<h2><strong> <?php _e('<a href="' . $spubcat[0]["url"] . '">' .  $spubcat[0]["s_name"] . '</a> (' . get_category_num_items($spubcat[0]) . ')' , 'hierarchy') ; ?> </strong></h2><?php ;
+                    		 echo '<ul>';
+                    		 foreach(get_subcategories() as $subcat) {
+					
+					echo "<li><h3><strong><a href='".$subcat["url"]."'>".$subcat["s_name"]."</a> (" . get_category_num_items($subcat) . ")</strong></h3></li>";
+				 }
+				 echo '</ul>';
+                    		 }  
+                    	elseif (!isset($spubcat[2]) && isset($spubcat[1]) && isset($spubcat[0])) { ?>
+                    		<h1><strong> <?php _e('<a href="' . $spubcat[1]["url"] . '">' .  $spubcat[1]["s_name"] . '</a> (' . get_category_num_items($spubcat[1]) . ')' , 'hierarchy') ; ?> </strong></h1>
+                    		<ul>
+                    		<li><h2><strong> <?php _e('<a href="' . $spubcat[0]["url"] . '">' .  $spubcat[0]["s_name"] . '</a> (' . get_category_num_items($spubcat[0]) . ')' , 'hierarchy') ; ?> </strong></h2></li></ul><?php ; 
+                    		echo '<ul>';
+                    		 foreach(get_subcategories() as $subcat) {
+					
+					echo "<li class='lastchild'><h4><strong><a href='".$subcat["url"]."'>".$subcat["s_name"]."</a> (" . get_category_num_items($subcat) . ")</strong></h4></li>";
+				 }
+				 echo '</ul>';
+                    		}
+                    	else { ?>
+                    	<?php if (isset($spubcat[2])){ ?> <h1><strong> <?php _e('<a href="' . $spubcat[2]["url"] . '">' .  $spubcat[2]["s_name"] . '</a> (' . get_category_num_items($spubcat[2]) . ')' , 'hierarchy') ; ?> </strong></h1><?php ; } ?>
+                    	<ul>
+                    	<?php if (isset($spubcat[1])){ ?> <li><h2><strong> <?php _e('<a href="' . $spubcat[1]["url"] . '">' .  $spubcat[1]["s_name"] . '</a> (' . get_category_num_items($spubcat[1]) . ')' , 'hierarchy') ; ?> </strong></h2></li><?php ; } ?>
+                    	<?php if (isset($spubcat[0])){ ?> <li class="lastchild"><h4><strong> <?php _e('<a href="' . $spubcat[0]["url"] . '">' .  $spubcat[0]["s_name"] . '</a> (' . get_category_num_items($spubcat[0]) . ')' , 'hierarchy') ; ?> </strong></h4></li><?php ; } ?>
+                    	<?php } ?>
                         <form action="<?php echo osc_base_url(true); ?>" method="get" onSubmit="return checkEmptyCategories()">
                             <input type="hidden" name="page" value="search" />
                             <fieldset class="box location">
-                                <h3><strong><?php _e('Your search', 'modern'); ?></strong></h3>
+                                <h3><strong><?php _e('Your search', 'hierarchy'); ?></strong></h3>
                                 <div class="row one_input">
                                     <input type="text" name="sPattern"  id="query" value="<?php echo osc_search_pattern() ; ?>" />
                                 </div>
-                                <h3><strong><?php _e('Location', 'modern') ; ?></strong></h3>
+                                <h3><strong><?php _e('Location', 'hierarchy') ; ?></strong></h3>
                                 <div class="row one_input">
-                                    <h6><?php _e('City', 'modern'); ?></h6>
+                                    <h6><?php _e('City', 'hierarchy'); ?></h6>
                                     <input type="text" id="sCity" name="sCity" value="<?php echo osc_search_city() ; ?>" />
                                 </div>
                             </fieldset>
 
                             <fieldset class="box show_only">
                                 <?php if( osc_images_enabled_at_items() ) { ?>
-                                <h3><strong><?php _e('Show only', 'modern') ; ?></strong></h3>
+                                <h3><strong><?php _e('Show only', 'hierarchy') ; ?></strong></h3>
                                 <div class="row checkboxes">
                                     <ul>
                                         <li>
                                             <input type="checkbox" name="bPic" id="withPicture" value="1" <?php echo (osc_search_has_pic() ? 'checked' : ''); ?> />
-                                            <label for="withPicture"><?php _e('Show only items with pictures', 'modern') ; ?></label>
+                                            <label for="withPicture"><?php _e('Show only items with pictures', 'hierarchy') ; ?></label>
                                         </li>
                                     </ul>
                                 </div>
                                 <?php } ?>
                                 <?php if( osc_price_enabled_at_items() ) { ?>
                                 <div class="row two_input">
-                                    <h6><?php _e('Price', 'modern') ; ?></h6>
-                                    <div><?php _e('Min', 'modern') ; ?>.</div>
+                                    <h6><?php _e('Price', 'hierarchy') ; ?></h6>
+                                    <div><?php _e('Min', 'hierarchy') ; ?>.</div>
                                     <input type="text" id="priceMin" name="sPriceMin" value="<?php echo osc_search_price_min() ; ?>" size="6" maxlength="6" />
-                                    <div><?php _e('Max', 'modern') ; ?>.</div>
+                                    <div><?php _e('Max', 'hierarchy') ; ?>.</div>
                                     <input type="text" id="priceMax" name="sPriceMax" value="<?php echo osc_search_price_max() ; ?>" size="6" maxlength="6" />
                                 </div>
                                 <?php } ?>
                                 <?php  osc_get_non_empty_categories(); ?>
                                 <?php  if ( osc_count_categories() ) { ?>
                                     <div class="row checkboxes">
-                                        <h6><?php _e('Category', 'modern') ; ?></h6>
+                                        <h6><?php _e('Category', 'hierarchy') ; ?></h6>
                                         <ul>
                                             <?php // RESET CATEGORIES IF WE USED THEN IN THE HEADER ?>
                                             <?php osc_goto_first_category() ; ?>
                                             <?php while(osc_has_categories()) { ?>
                                                 <li>
-                                                    <input type="checkbox" id="cat<?php echo osc_category_id(); ?>" name="sCategory[]" value="<?php echo osc_category_id(); ?>" <?php echo ( (in_array(osc_category_id(), osc_search_category())  || in_array(osc_category_slug()."/", osc_search_category()) || count(osc_search_category())==0 )  ? 'checked' : '') ; ?> /> <label for="cat<?php echo osc_category_id(); ?>"><strong><?php echo osc_category_name(); ?></strong></label>
+                                                    <input type="checkbox" name="sCategory[]" id="sCategory" value="<?php echo osc_category_id(); ?>" <?php echo ( (in_array(osc_category_id(), osc_search_category())  || in_array(osc_category_slug()."/", osc_search_category()) || count(osc_search_category())==0 )  ? 'checked' : '') ; ?> /> <label for="cat<?php echo osc_category_id(); ?>"><strong><?php echo osc_category_name(); ?></strong></label>
                                                 </li>
                                             <?php } ?>
                                         </ul>
@@ -134,7 +161,7 @@
                                 }
                             ?>
 
-                            <button type="submit"><?php _e('Apply', 'modern') ; ?></button>
+                            <button type="submit"><?php _e('Apply', 'hierarchy') ; ?></button>
                         </form>
                         <?php osc_alert_form() ; ?>
                     </div>
@@ -151,14 +178,14 @@
                             minLength: 2,
                             select: function( event, ui ) {
                                 log( ui.item ?
-                                    "<?php _e('Selected', 'modern'); ?>: " + ui.item.value + " aka " + ui.item.id :
-                                    "<?php _e('Nothing selected, input was', 'modern'); ?> " + this.value );
+                                    "<?php _e('Selected', 'hierarchy'); ?>: " + ui.item.value + " aka " + ui.item.id :
+                                    "<?php _e('Nothing selected, input was', 'hierarchy'); ?> " + this.value );
                             }
                         });
                     });
                     
                     function checkEmptyCategories() {
-                        var n = $("input[id*=cat]:checked").length;
+                        var n = $("#sCategory:checked").length;
                         if(n>0) {
                             return true;
                         } else {

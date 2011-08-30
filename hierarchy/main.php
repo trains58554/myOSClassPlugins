@@ -61,7 +61,14 @@
                                  <tbody>
                                     <?php $class = "even"; ?>
                                     <?php while ( osc_has_latest_items() ) { ?>
+                                        <?php if(osc_item_is_premium()){
+					    if($class == "odd"){ ?>
+						<tr class="premium_even">
+					    <?php }else{ ?>
+						<tr class="premium_odd">
+					    <?php } }else{ ?>
                                         <tr class="<?php echo $class ; ?>">
+					    <?php } ?>
                                             <?php if( osc_images_enabled_at_items() ) { ?>
                                              <td class="photo">
                                                 <?php if( osc_count_item_resources() ) { ?>
@@ -74,6 +81,8 @@
                                              </td>
                                             <?php } ?>
                                              <td class="text">
+						  <?php if(osc_item_is_premium()){ ?>
+						 <h3><div style="float:right"><?php _e("Sponsored ad", "modern"); ?></div></h3><?php }?>
                                                  <h3><a href="<?php echo osc_item_url() ; ?>"><?php echo osc_item_title() ; ?></a></h3>
                                                  <p><strong><?php if( osc_price_enabled_at_items() ) { echo osc_item_formated_price() ; ?> - <?php } echo osc_item_city(); ?> (<?php echo osc_item_region();?>) - <?php echo osc_format_date(osc_item_pub_date()); ?></strong></p>
                                                  <p><?php echo osc_highlight( strip_tags( osc_item_description() ) ) ; ?></p>

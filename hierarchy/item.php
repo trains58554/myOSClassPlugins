@@ -49,6 +49,7 @@
         <script type="text/javascript" src="<?php echo osc_current_web_theme_js_url('jquery.validate.min.js') ; ?>"></script>
     </head>
     <body>
+    <div class="containerbg">
         <div class="container">
             <?php osc_current_web_theme_path('header.php') ; ?>
             <div class="content item">
@@ -89,8 +90,10 @@
                                     <?php while ( osc_has_item_meta() ) { ?>
                                         <div class="meta">
                                             <strong><?php echo osc_item_meta_name(); ?>:</strong> <?php echo osc_item_meta_value(); ?>
+           
                                         </div>
                                     <?php } ?>
+                                    
                                 </div>
                             <?php } ?>
                         </div>
@@ -101,7 +104,7 @@
                             <strong><a href="#contact"><?php _e('Contact seller', 'modern') ; ?></a></strong>
                             <?php     } ?>
                             <?php } ?>
-                            <strong class="share"><a href="<?php echo osc_item_send_friend_url() ; ?>" rel="nofollow"><?php _e('Share', 'modern') ; ?></a></strong>
+                            <strong class="share"><a href="<?php echo osc_item_send_friend_url() ; ?>" rel="nofollow"><?php _e('Share', 'modern') ; ?></a></strong> <strong class="share"><?php watchlist(); ?></strong> <?php seller_post(); ?>
                         </p>
                         <?php osc_run_hook('location') ; ?>
                     </div>
@@ -225,6 +228,7 @@
                 </div>
             </div>
             <?php osc_current_web_theme_path('footer.php') ; ?>
+        </div>
         </div>
         <?php osc_show_flash_message() ; ?>
         <?php osc_run_hook('footer'); ?>

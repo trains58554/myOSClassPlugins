@@ -32,7 +32,10 @@ input:focus {
 }
 
 /* -- ERROR PAGES --------------------------------------- */
-.error { margin: 10px 0; padding: 20px 0; clear: both; }
+#comment_error_list .error,
+
+#error_list .error { margin: 10px 0; padding: 20px 0; clear: both; }
+
 .error h1 { font-size: 2.5em; text-align: center; }
 
 /* -- GLOBAL STYLES --------------------------------------- */
@@ -2179,6 +2182,14 @@ div.uploader input {
     background-color: #d7eaf0;
 }
 
+.home #main .latest_ads table tr.premium_odd td {
+	 background-color: #E9F5F9;
+}
+
+.home #main .latest_ads table tr.premium_even td {
+	 background-color: #d7eaf0;
+}
+
 .ui-menu {
 	list-style:none;
 	padding: 2px;
@@ -2210,4 +2221,34 @@ div.uploader input {
 .ui-menu .ui-menu-item a.ui-state-active {
 	font-weight: normal;
 	margin: -1px;
+}
+
+
+ ul#list-nav {
+   list-style:none;
+   margin:20px;
+   padding:0;
+   width:750px
+   }
+   
+
+
+ul#list-nav li {
+display:inline
+}
+
+ul#list-nav li a {
+text-decoration:none;
+padding:5px 0;
+width:100px;
+background:#485e49;
+color:#eee;
+float:left;
+text-align:center;
+border-left:1px solid #fff;
+}
+
+ul#list-nav li a:hover {
+background:#a2b3a1;
+color:#000
 }
