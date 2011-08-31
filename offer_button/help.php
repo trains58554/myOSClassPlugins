@@ -39,6 +39,12 @@
                 <p>
                     <?php _e('This plugin places a button on items that the user wants to accept offers on. Then the user can easly submit his/her offer to the seller.', 'offer_button'); ?>
                 </p>
+                <h2>
+                    <?php _e('How do I install the  Offer Button plugin?', 'offer_button'); ?>
+                </h2>
+                <p>
+                    <?php _e('You have to edit your item.php file in your theme folder. Then add the following line &lt;?php offer_button(); ?&gt; anywhere you want the offer button to show up. I would suggest putting the offer button code at line 107.', 'offer_button'); ?>
+                </p>
             </fieldset>
         </div>
     </div>
