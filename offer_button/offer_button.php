@@ -34,6 +34,7 @@
                         <?php while(osc_has_items()) { ?>
                                 <div class="item" >
                                         <h3>
+                                            <a name="item<?php echo osc_item_id();?>"></a>
                                             <?php echo osc_item_title(); ?>
                                         </h3>
                                         <p>

@@ -7,8 +7,13 @@ $user_id	  = '';
 if(Params::getParam('user-id') != ''){
 	$user_id = Params::getParam('user-id');
 }
+$item_id	  = '';
+if(Params::getParam('item-id') != ''){
+	$item_id = Params::getParam('item-id');
+}
 
 $promo_action = Params::getParam('offer-action');
+
 
 switch($promo_action) {
 	case 'accept':

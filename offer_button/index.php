@@ -63,13 +63,14 @@
     }
     
     function offer_button() {
+    if(osc_offer_button_enabled() == 1){
     	$conn = getConnection() ;
 	$detail = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_item_options WHERE fk_i_item_id = %d", DB_TABLE_PREFIX, osc_item_id());
  	if (osc_is_web_user_logged_in()){
  	if ($detail['b_offerYes'] == 1){
     	?>
     	
-    	<a id="inline" href='#offer_form' rel='inline'>offer</a>
+    	<strong class="share"><a id="inline" href='#offer_form' rel='inline'>Place An Offer</a></strong>
     	<div style="display:none">
 	<form id="offer_form" method="post"  onsubmit="return false;" >
 		<input type="hidden" id="user_id" name="user_id" value="<?php echo osc_logged_user_id(); ?>" />
@@ -89,7 +90,10 @@
 	</div> <?php
 	}
 	}
+	}
     }
+    
+    
     // HELPER
     function osc_offer_button_enabled() {
         return(osc_get_preference('offer_button_enabled', 'plugin-offer')) ;
@@ -240,6 +244,40 @@
     	$conn->osc_dbExec("DELETE FROM %st_offer_button WHERE item_id='%d'", DB_TABLE_PREFIX, $id);
     }
     
+    /**
+     * Add new options to supertoolbar plugin (if installed)
+     */
+    function offer_supertoolbar() {
+
+        if( !osc_is_web_user_logged_in() ) {
+            return false;
+        }
+        
+        if( Rewrite::newInstance()->get_location() != 'item' ) {
+            return false;
+        }
+        
+        //if( osc_item_user_id() != osc_logged_user_id() ) {
+          //  return false;
+        //}
+        
+        $toolbar = SuperToolBar::newInstance();
+        $conn    = getConnection();
+        $offerCheck = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_button WHERE seller_id  = '%d' AND item_id = '%d'", DB_TABLE_PREFIX, osc_logged_user_id(), osc_item_id());
+        
+        if($offerCheck){
+        $offer_url = osc_base_url(true).'?page=custom&file=offer_button/offer_byItem.php#item' . osc_item_id();
+        $toolbar->addOption('<a href="' . $offer_url . '" />' . __('View offers on this ad', 'offfer_button') . '</a>');
+        }
+        
+        $offerStatus = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_button WHERE user_id  = '%d' AND item_id = '%d'", DB_TABLE_PREFIX, osc_logged_user_id(), osc_item_id());
+        
+        if($offerStatus){
+        $offer_button_url = osc_base_url(true).'?page=custom&file=offer_button/offer_button.php#item' . osc_item_id();
+        $toolbar->addOption('<a href="' . $offer_button_url . '" />' . __('View status of offer', 'offfer_button') . '</a>');
+        }
+    }
+    
     // This is needed in order to be able to activate the plugin
     osc_register_plugin(osc_plugin_path(__FILE__), 'offer_call_after_install') ;
 
@@ -254,13 +292,16 @@
     
     // Add hook for item deleted
     osc_add_hook('delete_item', 'offer_item_delete');
-    
+
+    if(osc_offer_button_enabled() == 1){
     // Add link in user menu page
     osc_add_hook('user_menu', 'offer_user_menu') ;
+    }
    
     // Add link in admin menu page
     osc_add_hook('admin_menu', 'offer_admin_menu') ;
     
+    if(osc_offer_button_enabled() == 1){
     // add javascript
     osc_add_hook('item_detail', 'offer_js') ;
     
@@ -278,5 +319,9 @@
 
     // Edit an item special attributes POST
     osc_add_hook('item_edit_post', 'offer_item_edit_post');
+    
+    // Add hook to supertoolbar
+    osc_add_hook('supertoolbar_hook' , 'offer_supertoolbar');
+    }
 
 ?>
