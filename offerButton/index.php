@@ -12,20 +12,20 @@
  */
     function offer_user_menu() {
         echo '<lo class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offer_byItem.php') . '" >' . __('View Offers on Your Items', 'offer_button') . '</a></li>';
-        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offer_button.php') . '" >' . __('View Your Submmited Offers', 'offer_button') . '</a></li>' ;
+        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offerButton.php') . '" >' . __('View Your Submmited Offers', 'offer_button') . '</a></li>' ;
     }
        
     function offer_admin_menu() {
    	 echo '<h3><a href="#">Offer Button</a></h3><ul>';
    	    	 	 
-        echo '<li class="" ><a href="' . osc_admin_render_plugin_url('offer_button/offer_config.php') . '" > &raquo; '. __('Configure', 'offer_button') . '</a></li>' .
-        '<li class="" ><a href="' . osc_admin_render_plugin_url('offer_button/help.php') . '" >&raquo; ' . __('F.A.Q. / Help', 'offer_button') . '</a></li>';
+        echo '<li class="" ><a href="' . osc_admin_render_plugin_url('offerButton/offer_config.php') . '" > &raquo; '. __('Configure', 'offer_button') . '</a></li>' .
+        '<li class="" ><a href="' . osc_admin_render_plugin_url('offerButton/help.php') . '" >&raquo; ' . __('F.A.Q. / Help', 'offer_button') . '</a></li>';
         echo '</ul>';
     }
            
     function offer_call_after_install() {
         $conn = getConnection() ;
-        $path = osc_plugin_resource('offer_button/struct.sql') ;
+        $path = osc_plugin_resource('offerButton/struct.sql') ;
         $sql  = file_get_contents($path) ;
         $conn->osc_dbImportSQL($sql) ;
         
@@ -33,7 +33,7 @@
 	$conn->autocommit(false);
 		try {
         $conn->commit();
-        osc_set_preference('offer_button_enabled', '1', 'plugin-offer', 'INTEGER');
+        osc_set_preference('offerButton_enabled', '1', 'plugin-offer', 'INTEGER');
     } catch (Exception $e) {
         $conn->rollback();
         echo $e->getMessage();
@@ -43,13 +43,13 @@
 
     function offer_call_after_uninstall() {
         $conn = getConnection() ;
-        $conn->osc_dbExec('DROP TABLE %st_offer_button', DB_TABLE_PREFIX) ;
+        $conn->osc_dbExec('DROP TABLE %st_offerButton', DB_TABLE_PREFIX) ;
         $conn->osc_dbExec('DROP TABLE %st_offer_item_options', DB_TABLE_PREFIX) ;
         
         $conn = getConnection();
 		 $conn->autocommit(false);
 			try {
-				osc_delete_preference('offer_button_enabled', 'plugin-offer');
+				osc_delete_preference('offerButton_enabled', 'plugin-offer');
 			}   catch (Exception $e) {
 				$conn->rollback();
 				echo $e->getMessage();
@@ -62,8 +62,8 @@
         osc_admin_render_plugin(osc_plugin_path(dirname(__FILE__)) . '/help.php') ;
     }
     
-    function offer_button() {
-    if(osc_offer_button_enabled() == 1){
+    function offerButton() {
+    if(osc_offerButton_enabled() == 1){
     	$conn = getConnection() ;
 	$detail = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_item_options WHERE fk_i_item_id = %d", DB_TABLE_PREFIX, osc_item_id());
  	if (osc_is_web_user_logged_in()){
@@ -95,8 +95,8 @@
     
     
     // HELPER
-    function osc_offer_button_enabled() {
-        return(osc_get_preference('offer_button_enabled', 'plugin-offer')) ;
+    function osc_offerButton_enabled() {
+        return(osc_get_preference('offerButton_enabled', 'plugin-offer')) ;
     }
        
     function offer_config() {
@@ -106,7 +106,7 @@
     // Offer button js
     function offer_js(){
     echo "\n";
-    echo '<!-- offer_button js -->
+    echo '<!-- offerButton js -->
     	<script type="text/javascript">
      		$(document).ready(function() {
           	$("a[rel=inline]").fancybox({
@@ -133,7 +133,7 @@
 		$.fancybox.showActivity();
 
         		$.post(
-		            "' . osc_ajax_plugin_url("offer_button/ajax-offer.php") . '",
+		            "' . osc_ajax_plugin_url("offerButton/ajax-offer.php") . '",
         		    $("#offer_form").serialize(),
         		    function(data){
                 if (data.success){
@@ -162,8 +162,8 @@
     
     function offer_css() {
     	echo "\n";
-    	echo '<!-- offer_button css -->
-    	<link href="./oc-content/plugins/offer_button/css/demo_table.css" rel="stylesheet" type="text/css" />';
+    	echo '<!-- offerButton css -->
+    	<link href="./oc-content/plugins/offerButton/css/demo_table.css" rel="stylesheet" type="text/css" />';
     }
     
     function offer_status($offerSt){
@@ -236,12 +236,12 @@
     
     function offer_user_delete($userId){
     	$conn   = getConnection();
-    	$conn->osc_dbExec("DELETE FROM %st_offer_button WHERE user_id='%d'", DB_TABLE_PREFIX, $userId);
+    	$conn->osc_dbExec("DELETE FROM %st_offerButton WHERE user_id='%d'", DB_TABLE_PREFIX, $userId);
     }
     
     function offer_item_delete($id){
     	$conn   = getConnection();
-    	$conn->osc_dbExec("DELETE FROM %st_offer_button WHERE item_id='%d'", DB_TABLE_PREFIX, $id);
+    	$conn->osc_dbExec("DELETE FROM %st_offerButton WHERE item_id='%d'", DB_TABLE_PREFIX, $id);
     }
     
     /**
@@ -263,18 +263,18 @@
         
         $toolbar = SuperToolBar::newInstance();
         $conn    = getConnection();
-        $offerCheck = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_button WHERE seller_id  = '%d' AND item_id = '%d'", DB_TABLE_PREFIX, osc_logged_user_id(), osc_item_id());
+        $offerCheck = $conn->osc_dbFetchResult("SELECT * FROM %st_offerButton WHERE seller_id  = '%d' AND item_id = '%d'", DB_TABLE_PREFIX, osc_logged_user_id(), osc_item_id());
         
         if($offerCheck){
-        $offer_url = osc_base_url(true).'?page=custom&file=offer_button/offer_byItem.php#item' . osc_item_id();
+        $offer_url = osc_base_url(true).'?page=custom&file=offerButton/offer_byItem.php#item' . osc_item_id();
         $toolbar->addOption('<a href="' . $offer_url . '" />' . __('View offers on this ad', 'offfer_button') . '</a>');
         }
         
-        $offerStatus = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_button WHERE user_id  = '%d' AND item_id = '%d'", DB_TABLE_PREFIX, osc_logged_user_id(), osc_item_id());
+        $offerStatus = $conn->osc_dbFetchResult("SELECT * FROM %st_offerButton WHERE user_id  = '%d' AND item_id = '%d'", DB_TABLE_PREFIX, osc_logged_user_id(), osc_item_id());
         
         if($offerStatus){
-        $offer_button_url = osc_base_url(true).'?page=custom&file=offer_button/offer_button.php#item' . osc_item_id();
-        $toolbar->addOption('<a href="' . $offer_button_url . '" />' . __('View status of offer', 'offfer_button') . '</a>');
+        $offerButton_url = osc_base_url(true).'?page=custom&file=offerButton/offerButton.php#item' . osc_item_id();
+        $toolbar->addOption('<a href="' . $offerButton_url . '" />' . __('View status of offer', 'offfer_button') . '</a>');
         }
     }
     
@@ -293,7 +293,7 @@
     // Add hook for item deleted
     osc_add_hook('delete_item', 'offer_item_delete');
 
-    if(osc_offer_button_enabled() == 1){
+    if(osc_offerButton_enabled() == 1){
     // Add link in user menu page
     osc_add_hook('user_menu', 'offer_user_menu') ;
     }
@@ -301,7 +301,7 @@
     // Add link in admin menu page
     osc_add_hook('admin_menu', 'offer_admin_menu') ;
     
-    if(osc_offer_button_enabled() == 1){
+    if(osc_offerButton_enabled() == 1){
     // add javascript
     osc_add_hook('item_detail', 'offer_js') ;
     

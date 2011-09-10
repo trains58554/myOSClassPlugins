@@ -19,7 +19,7 @@
 <form action="<?php osc_admin_base_url(true); ?>" method="post">
     <input type="hidden" name="page" value="plugins" />
     <input type="hidden" name="action" value="renderplugin" />
-    <input type="hidden" name="file" value="offer_button/offer_config.php" />
+    <input type="hidden" name="file" value="offerButton/offer_config.php" />
     <input type="hidden" name="option" value="stepone" />
     <div>
     <fieldset>

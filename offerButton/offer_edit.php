@@ -33,7 +33,7 @@ switch($promo_action) {
                 osc_sendMail($emailParams);*/
                 osc_add_flash_ok_message(__('Offer Accepted', 'offer_button'), 'admin');
 	// HACK TO DO A REDIRECT
-    	echo '<script>location.href="' . osc_base_url(true).'?page=custom&file=offer_button/offer_byItem.php"</script>';
+    	echo '<script>location.href="' . osc_base_url(true).'?page=custom&file=offerButton/offer_byItem.php"</script>';
     	exit; 	
 	break;
 		
@@ -44,7 +44,7 @@ switch($promo_action) {
 		osc_show_flash_message(__('Offer set to Pending', 'offer_button'), 'admin');
      	
      	// HACK TO DO A REDIRECT
-    	echo '<script>location.href="' . osc_base_url(true).'?page=custom&file=offer_button/offer_byItem.php"</script>';
+    	echo '<script>location.href="' . osc_base_url(true).'?page=custom&file=offerButton/offer_byItem.php"</script>';
     	exit; 
 	break;
 	
@@ -53,7 +53,7 @@ switch($promo_action) {
                 $conn->osc_dbExec("UPDATE %st_offer_button SET offer_status = '%d' WHERE id = '%d'", DB_TABLE_PREFIX, 3, $offer_id);
                 osc_add_flash_ok_message(__('Offer Declined', 'offer_button'), 'admin');
 	// HACK TO DO A REDIRECT
-    	echo '<script>location.href="' . osc_base_url(true).'?page=custom&file=offer_button/offer_byItem.php"</script>';
+    	echo '<script>location.href="' . osc_base_url(true).'?page=custom&file=offerButton/offer_byItem.php"</script>';
     	exit; 
 	break;
 }
