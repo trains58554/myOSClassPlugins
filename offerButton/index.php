@@ -397,7 +397,9 @@
     osc_add_hook('item_form_post', 'offer_form_post');
     
     osc_add_hook('item_detail', 'offer_item_detail');
+    
     osc_add_hook('header', 'offer_button');
+    
     // Edit an item special attributes
     osc_add_hook('item_edit', 'offer_item_edit');
 
