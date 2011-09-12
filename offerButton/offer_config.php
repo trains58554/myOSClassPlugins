@@ -5,11 +5,19 @@
     if(Params::getParam('enabled') != '') {
         $enabled = Params::getParam('enabled');
     } else {
-        $enabled = (osc_offer_button_enabled() != '') ? osc_offer_button_enabled() : '' ;
+        $enabled = (osc_offerButton_enabled() != '') ? osc_offerButton_enabled() : '' ;
+    }
+    $lastThree            = '';
+    $dao_preference = new Preference();
+    if(Params::getParam('lastThree') != '') {
+        $lastThree = Params::getParam('lastThree');
+    } else {
+        $lastThree = (osc_offerButton_lastThree() != '') ? osc_offerButton_lastThree() : '' ;
     }
     
     if( Params::getParam('option') == 'stepone' ) {
-        $dao_preference->update(array("s_value" => $enabled), array("s_section" => "plugin-offer", "s_name" => "offer_button_enabled")) ;
+        $dao_preference->update(array("s_value" => $enabled), array("s_section" => "plugin-offer", "s_name" => "offerButton_enabled")) ;
+        $dao_preference->update(array("s_value" => $lastThree), array("s_section" => "plugin-offer", "s_name" => "offerButton_lastThree")) ;
         echo '<div style="text-align:center; font-size:22px; background-color:#00bb00;"><p>' . __('Settings Saved', 'offer_button') . '.</p></div>';
     }
     unset($dao_preference) ;
@@ -27,6 +35,13 @@
         <select name="enabled" id="enabled"> 
         	<option <?php if($enabled == 1){echo 'selected="selected"';}?>value='1'>Yes</option>
         	<option <?php if($enabled == 0){echo 'selected="selected"';}?>value='0'>No</option>
+        </select>
+        <br />
+        <br />
+        <label for="lastThree" style="font-weight: bold;"><?php _e('Display the top three offers', 'offer_button'); ?></label>:<br />
+        <select name="lastThree" id="lastThree"> 
+        	<option <?php if($lastThree == 1){echo 'selected="selected"';}?>value='1'>Yes</option>
+        	<option <?php if($lastThree == 0){echo 'selected="selected"';}?>value='0'>No</option>
         </select>
         <br />
         <br />
