@@ -3,7 +3,7 @@
 Plugin Name: Offer Button
 Plugin URI: http://www.osclass.org/
 Description: This plugin extends a category of items to display an offer button.
-Version: 0.1
+Version: 2.0
 Author: JChapman
 Author URI: http://forums.osclass.org/index.php?action=profile;u=1728
 Author Email: siouxfallsrummages@gmail.com
