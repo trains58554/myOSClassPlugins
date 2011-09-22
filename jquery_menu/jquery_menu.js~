@@ -1,0 +1,8 @@
+$().ready(function(){
+	$("ul.topnav li a").mouseenter(function() {
+		$(this).next().slideDown('slow');
+		$(this).parent().mouseleave(function() {
+			$(this).parent().find("ul").slideUp('fast');
+		});
+	});
+});
