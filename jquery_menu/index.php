@@ -24,7 +24,7 @@ Plugin Name: JQuery Menu
 Plugin URI: http://www.osclass.org/
 Description: This Plugin Shows a JQuery Navigation Menu Where Ever You Want.
 Version: 2.0
-Author: RajaSekar
+Author: RajaSekar & JChapman
 Author URI: http://www.osclass.org/
 Short Name: JQuery Menu
 */
