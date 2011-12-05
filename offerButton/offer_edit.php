@@ -23,6 +23,10 @@ $nUser	  = '';
 if(Params::getParam('n-user') != ''){
 	$nUser = Params::getParam('n-user');
 }
+$rCode	  = '';
+if(Params::getParam('r_code') != ''){
+	$rCode = Params::getParam('r_code');
+}
 
 $promo_action = Params::getParam('offer-action');
 
@@ -95,13 +99,52 @@ switch($promo_action) {
     	exit; 
 	break;
 	
-	case 'lock':
+	case 'reasonLock':
+	   $conn = getConnection();
+		$reasons = $conn->osc_dbFetchResults("SELECT * FROM %st_offer_reason", DB_TABLE_PREFIX);
+	   ?>
+	   <div class="content user_account">
+    <h1>
+        <strong><?php _e('View Offers on Your Items', 'offer_button'); ?></strong>
+    </h1>
+    <div id="sidebar">
+        <?php echo osc_private_user_menu(); ?>
+    </div>
+    <div id="main">
+	   <h2><?php _e('Select a Reason for locking the user','offer_button'); ?></h2>
+	   <form action="<?php echo osc_base_url(true); ?>" method="post">
+         <input type="hidden" name="page" value="custom" />
+         <input type="hidden" name="offer-action" value="lock" />
+         <input type="hidden" name="file" value="offerButton/offer_edit.php" />
+         <input type="hidden" name="n-user" value="<?php echo $nUser; ?>" />
+         <input type="hidden" name="offer-id" value="<?php echo $offer_id; ?>" />
+         <input type="hidden" name="user-id" value="<?php echo $user_id; ?>" />
+         <input type="hidden" name="item-id" value="<?php echo $item_id; ?>" />
+         <input type="hidden" name="reason" value="1" />
+         <select name="r_code" id="r_code">
+         <?php foreach($reasons as $reason) {
+            echo '<option value="' . $reason['id'] . '">' . $reason['reason'] . '</option>';
+           } ?>
+         </select>
+         <input type="submit" value="Submit" />
+    <div>
+	 </div>
+	</div>
+	   <?php
+	   exit; 
+	break;
+	
+   case 'lock':
 		$conn = getConnection();
+		$item_idA = Item::newInstance()->findByPrimaryKey($item_id);
 		if($nUser == '' && $user_id != ''){
       	$conn->osc_dbExec("UPDATE %st_offer_button SET user_locked = '%d' WHERE user_id = '%d'", DB_TABLE_PREFIX, 1, $user_id);
+      	$conn->osc_dbExec("REPLACE INTO %st_offer_user_locked SET seller_id = '%d', user_id = '%d', reason_code = '%d', locked = '%d'", DB_TABLE_PREFIX, $item_idA['fk_i_user_id'], $user_id, $rCode , 1);
       } else {
       	$conn->osc_dbExec("UPDATE %st_offer_button SET user_locked = '%d' WHERE b_email = '%s'", DB_TABLE_PREFIX, 1, $nUser);
+      	$conn->osc_dbExec("REPLACE INTO %st_offer_user_locked SET seller_id = '%d', email = '%s', reason_code = '%d', locked = '%d'", DB_TABLE_PREFIX, $item_idA['fk_i_user_id'], $nUser, $rCode , 1);
       }
+      
 	// HACK TO DO A REDIRECT
     	echo '<script>location.href="' . osc_base_url(true).'?page=custom&file=offerButton/offer_byItem.php"</script>';
     	exit; 
@@ -109,10 +152,13 @@ switch($promo_action) {
 	
 	case 'unlock':
 		$conn = getConnection();
+		$item_idA = Item::newInstance()->findByPrimaryKey($item_id);
 		if($nUser == '' && $user_id != ''){
       	$conn->osc_dbExec("UPDATE %st_offer_button SET user_locked = '%d' WHERE user_id = '%d'", DB_TABLE_PREFIX, 0, $user_id);
+      	$conn->osc_dbExec("DELETE FROM %st_offer_user_locked WHERE seller_id = '%d' AND user_id = '%d'", DB_TABLE_PREFIX, $item_idA['fk_i_user_id'], $user_id);
       } else {
       	$conn->osc_dbExec("UPDATE %st_offer_button SET user_locked = '%d' WHERE b_email = '%s'", DB_TABLE_PREFIX, 0, $nUser);
+      	$conn->osc_dbExec("DELETE FROM %st_offer_user_locked WHERE seller_id = '%d' AND email = '%s'", DB_TABLE_PREFIX, $item_idA['fk_i_user_id'], $nUser);
       }
 	// HACK TO DO A REDIRECT
     	echo '<script>location.href="' . osc_base_url(true).'?page=custom&file=offerButton/offer_byItem.php"</script>';
