@@ -3,14 +3,14 @@
     $i_userId = osc_logged_user_id();
     $itemsPerPage = (Params::getParam('itemsPerPage') != '') ? Params::getParam('itemsPerPage') : 5;
     $iPage        = (Params::getParam('iPage') != '') ? Params::getParam('iPage') : 0;
+	 $search = new Search();
+    $search->addConditions(sprintf("%st_offer_button.user_id = %d", DB_TABLE_PREFIX, $i_userId));
+    $search->addConditions(sprintf("%st_offer_button.item_id = %st_item.pk_i_id", DB_TABLE_PREFIX, DB_TABLE_PREFIX));
+    $search->addTable(sprintf("%st_offer_button", DB_TABLE_PREFIX));
+    $search->page($iPage, $itemsPerPage);
 
-    Search::newInstance()->addConditions(sprintf("%st_offer_button.user_id = %d", DB_TABLE_PREFIX, $i_userId));
-    Search::newInstance()->addConditions(sprintf("%st_offer_button.item_id = %st_item.pk_i_id", DB_TABLE_PREFIX, DB_TABLE_PREFIX));
-    Search::newInstance()->addTable(sprintf("%st_offer_button", DB_TABLE_PREFIX));
-    Search::newInstance()->page($iPage, $itemsPerPage);
-
-    $aItems      = Search::newInstance()->doSearch();
-    $iTotalItems = Search::newInstance()->count();
+    $aItems      = $search->doSearch();
+    $iTotalItems = $search->count();
     $iNumPages   = ceil($iTotalItems / $itemsPerPage) ;
 
     View::newInstance()->_exportVariableToView('items', $aItems);
@@ -35,7 +35,7 @@
                                 <div class="item" >
                                         <h3>
                                             <a name="item<?php echo osc_item_id();?>"></a>
-                                            <?php echo osc_item_title(); ?>
+                                            <a class="external" href="<?php echo osc_item_url(); ?>" target="_blank"><?php echo osc_item_title(); ?></a>
                                         </h3>
                                         <p>
                                         <?php if( osc_price_enabled_at_items() ) { _e('Price', 'modern') ; ?>: <?php echo osc_format_price(osc_item_price()); } ?>
@@ -65,12 +65,13 @@
                                         			$odd_even = "even";
                                         			$odd = 1;
                                     			 }
+                                    			 
                                         	?>
                                         	<tr class="<?php echo $odd_even;?>">
                                         	<?php $user = User::newInstance()->findByPrimaryKey($userOffer['user_id']); ?>
                                         		<td><?php echo sprintf(__('$%.2f','offer_button'), $userOffer['offer_value']); ?></td>
-                                        		<td><?php echo offer_status($userOffer['offer_status']); ?></td>
-                                        		<td><?php echo $userOffer['offer_date']; ?></td>
+                                        		<td><?php if($userOffer['user_locked'] != 1) { echo offer_status($userOffer['offer_status']);} else{ echo __('You are blocked at this time','offer_button'); } ?></td>
+                                        		<td><?php echo $userOffer['offer_date']; ?><div class="offBut"><a title="<?php echo __('Send Email to seller','offer_button'); ?>" href="mailto:<?php echo $user['s_email']; ?>"><img src="<?php echo osc_base_url() . 'oc-content/plugins/offerButton/images/email_compose.png'; ?>"  width="25px" height="25px" alt="<?php _e('send email','offer_button'); ?>" /></a></div></td></td>
                                         	</tr>
                                         	<?php } ?>
                                         	</tbody>

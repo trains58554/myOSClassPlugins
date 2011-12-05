@@ -1,0 +1,27 @@
+#main .item {
+	padding-bottom: 25px;
+}
+
+A.external {
+    background: url("../images/external.png") no-repeat scroll right center transparent;
+    padding-right: 13px;
+}
+
+.delFlag {
+	padding-top: 23px;
+	float: right;
+}
+
+.offBut {
+	padding-top: 0;
+	float: right;
+}
+
+a.gray {
+	opacity:0.4;
+	cursor: default;
+}
+
+tr.gray {
+	opacity:0.5;
+}

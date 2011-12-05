@@ -30,9 +30,9 @@
  * DataTables features
  */
 
-.dataTables_wrapper {
+.dataTables_wrapper {	
 	position: relative;
-	min-height: 302px;
+	min-height: 100px;
 	clear: both;
 	_height: 302px;
 	zoom: 1; /* Feeling sorry for IE */
@@ -223,7 +223,7 @@ tr.odd {
 }
 
 tr.even {
-	background-color: white;
+	background-color: #F7F7F7;
 }
 
 div.odd {
@@ -231,7 +231,7 @@ div.odd {
 }
 
 div.even {
-    background-color: white;
+    background-color: #F7F7F7;
 }
 
 
