@@ -17,9 +17,10 @@ function update($version) {
 
 		osc_set_preference('offerButton_version', '2.0', 'plugin-offer', 'INTEGER');
 		osc_set_preference('offerButton_locking', '0', 'plugin-offer', 'INTEGER');
-		osc_set_preference('offerButton_email', '0', 'plugin-offer', 'INTEGER');
+		osc_set_preference('offerButton_email', '1', 'plugin-offer', 'INTEGER');
 		osc_set_preference('offerButton_delOff', '0', 'plugin-offer', 'INTEGER');
 		osc_set_preference('offerButton_usersOnly', '1', 'plugin-offer', 'INTEGER');
+		osc_set_preference('offerButton_trade', '0', 'plugin-offer', 'INTEGER');
 	}
 	echo '<div style="text-align:center; font-size:22px; background-color:#00bb00;"><p>' . __('Offer Button Updated to version', 'offer_button') . ' ' . osc_offerButton_version() . '.</p></div>';
 }

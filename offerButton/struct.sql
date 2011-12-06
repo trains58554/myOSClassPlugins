@@ -8,6 +8,7 @@ item_id int(10) ,
 offer_value FLOAT,
 offer_status int(2),
 user_locked int(2),
+offer_type int(2) DEFAULT "1",
 offer_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
 sDelete int(2)DEFAULT "0",
 PRIMARY KEY ( id )
@@ -16,8 +17,8 @@ PRIMARY KEY ( id )
 CREATE TABLE /*TABLE_PREFIX*/t_offer_item_options(
     fk_i_item_id int(10) unsigned NOT NULL,
     b_offerYes BOOLEAN,
-	 allow_locking int(2),
-	 allow_contact_email int(2),
+	 b_offerMonetary BOOLEAN,
+	 b_offerTrade BOOLEAN,
 	 
         PRIMARY KEY (fk_i_item_id),
         FOREIGN KEY (fk_i_item_id) REFERENCES /*TABLE_PREFIX*/t_item (pk_i_id)

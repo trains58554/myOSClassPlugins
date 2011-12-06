@@ -43,8 +43,9 @@
                                         <br />
                                         <?php 
                                         $conn   = getConnection();
-                                        $offers = $conn->osc_dbFetchResults("SELECT * FROM %st_offer_button WHERE item_id  = '%d' AND user_id='%d' ORDER BY id DESC", DB_TABLE_PREFIX, osc_item_id(),osc_logged_user_id()); ?>
-                                        
+                                        $offers = $conn->osc_dbFetchResults("SELECT * FROM %st_offer_button WHERE item_id  = '%d' AND user_id='%d' ORDER BY id DESC", DB_TABLE_PREFIX, osc_item_id(),osc_logged_user_id()); 
+                                        $locked = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_user_locked WHERE seller_id  = '%d' AND user_id = '%d'", DB_TABLE_PREFIX, $offer['seller_id'], osc_logged_user_id() );
+	                                     $reason = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_reason WHERE id = '%d'", DB_TABLE_PREFIX, $locked['readon_code'] ); ?>
                                         <div class="dataTables_wrapper">
                                         <table cellpadding="0" cellspacing="0" border="0" class="display" id="datatables_list">
                                         	<thead>
@@ -69,8 +70,8 @@
                                         	?>
                                         	<tr class="<?php echo $odd_even;?>">
                                         	<?php $user = User::newInstance()->findByPrimaryKey($userOffer['user_id']); ?>
-                                        		<td><?php echo sprintf(__('$%.2f','offer_button'), $userOffer['offer_value']); ?></td>
-                                        		<td><?php if($userOffer['user_locked'] != 1) { echo offer_status($userOffer['offer_status']);} else{ echo __('You are blocked at this time','offer_button'); } ?></td>
+                                        		<td><?php if($userOffer['offer_type'] == 1){ echo sprintf(__('$%.2f','offer_button'), $userOffer['offer_value']);}else if($userOffer['offer_type'] == 2){_e('Trade','offer_button');}else if($userOffer['offer_type'] == 3){echo sprintf(__('$%.2f','offer_button'), $userOffer['offer_value']) . __(' Trade', 'offer_button');} ?></td>
+                                        		<td><?php if($userOffer['user_locked'] != 1) { echo offer_status($userOffer['offer_status']);}else{ echo __('You are blocked at this time ','offer_button') . $reason['reason']; } ?></td>
                                         		<td><?php echo $userOffer['offer_date']; ?><div class="offBut"><a title="<?php echo __('Send Email to seller','offer_button'); ?>" href="mailto:<?php echo $user['s_email']; ?>"><img src="<?php echo osc_base_url() . 'oc-content/plugins/offerButton/images/email_compose.png'; ?>"  width="25px" height="25px" alt="<?php _e('send email','offer_button'); ?>" /></a></div></td></td>
                                         	</tr>
                                         	<?php } ?>

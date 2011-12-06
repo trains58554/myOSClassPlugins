@@ -42,6 +42,14 @@
     } else {
         $usersOnly = (osc_offerButton_usersOnly() != '') ? osc_offerButton_usersOnly() : '' ;
     }
+    $offerTrade            = '';
+    $dao_preference = new Preference();
+    if(Params::getParam('trade') != '') {
+        $offerTrade = Params::getParam('trade');
+    } else {
+        $offerTrade = (osc_offerButton_trade() != '') ? osc_offerButton_trade() : '' ;
+    }
+    
     if( Params::getParam('option') == 'stepone' ) {
         $dao_preference->update(array("s_value" => $enabled), array("s_section" => "plugin-offer", "s_name" => "offerButton_enabled")) ;
         $dao_preference->update(array("s_value" => $lastThree), array("s_section" => "plugin-offer", "s_name" => "offerButton_lastThree")) ;
@@ -49,10 +57,12 @@
         $dao_preference->update(array("s_value" => $delOff), array("s_section" => "plugin-offer", "s_name" => "offerButton_delOff")) ;
         $dao_preference->update(array("s_value" => $email), array("s_section" => "plugin-offer", "s_name" => "offerButton_email")) ;
         $dao_preference->update(array("s_value" => $usersOnly), array("s_section" => "plugin-offer", "s_name" => "offerButton_usersOnly")) ;
+        $dao_preference->update(array("s_value" => $offerTrade), array("s_section" => "plugin-offer", "s_name" => "offerButton_trade")) ;
         echo '<div style="text-align:center; font-size:22px; background-color:#00bb00;"><p>' . __('Settings Saved', 'offer_button') . '.</p></div>';
     }
     unset($dao_preference) ;
-    
+    $pluginInfo = osc_plugin_get_info('offerButton/index.php');
+    //print_r(osc_plugin_get_info('offerButton/index.php'));    
 ?>
 
 <form action="<?php osc_admin_base_url(true); ?>" method="post">
@@ -107,11 +117,18 @@
         </select>
         <br />
         <br />
+        <label for="trade" style="font-weight: bold;"><?php _e('Allow users to accept trades', 'offer_button'); ?></label>:<br />
+        <select name="trade" id="trade"> 
+        	<option <?php if($offerTrade == 1){echo 'selected="selected"';}?>value='1'>Yes</option>
+        	<option <?php if($offerTrade == 0){echo 'selected="selected"';}?>value='0'>No</option>
+        </select>
+        <br />
+        <br />
         <input type="submit" value="<?php _e('Save', 'carousel'); ?>" />
         <?php }else{
         		echo '<a href="' . osc_admin_render_plugin_url(osc_plugin_path(dirname(__FILE__)) . '/update.php') . '">&raquo; ' . __('Click here to finish update', 'offer_button') . '</a>';
         } ?>
-        <?php echo '<br /><br />Version ' .  osc_offerButton_version(); ?>
+        <?php echo '<br /><br />Version ' .  osc_offerButton_version() . ' Author <a class="external" target="_blank" href="' . $pluginInfo['author_uri'] . '">' . $pluginInfo['author'] . '</a>'; ?>
      </fieldset>
     </div>
 </form>
