@@ -35,7 +35,7 @@ switch($promo_action) {
 	case 'accept':
 		$conn = getConnection();
       $conn->osc_dbExec("UPDATE %st_offer_button SET offer_status = '%d' WHERE id = '%d'", DB_TABLE_PREFIX, 1, $offer_id);
-      $buyUser = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_button WHERE id  = '%d'", DB_TABLE_PREFIX, $offer_id);          
+      $buyUser = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_button WHERE id = '%d'", DB_TABLE_PREFIX, $offer_id);          
       
       $item_idA = Item::newInstance()->findByPrimaryKey($item_id);
       if($buyUser['user_id'] != ''){
@@ -45,9 +45,12 @@ switch($promo_action) {
       	$user['s_email'] = $bEmail;
       }
       
-      offer_button_send_status_email($item_idA, 1, $user['s_name'], $user['s_email']);
+      $cName = $user['s_name'];
+      $cEmail = $user['s_email'];
+
+      offer_button_send_status_email($item_idA, 1, $cName, $cEmail);
                 
-      osc_add_flash_ok_message(__('Offer Accepted', 'offer_button'), 'admin');
+      //osc_add_flash_ok_message(__('Offer Accepted', 'offer_button'), 'admin');
 	// HACK TO DO A REDIRECT
     	echo '<script>location.href="' . osc_base_url(true).'?page=custom&file=offerButton/offer_byItem.php"</script>';
     	exit; 	
@@ -64,9 +67,13 @@ switch($promo_action) {
       	$user['s_name'] = $bName;
       	$user['s_email'] = $bEmail;
       }
-      offer_button_send_status_email($item_idA, 2, $user['s_name'], $user['s_email']);
+      
+      $cName = $user['s_name'];
+      $cEmail = $user['s_email'];
+
+      offer_button_send_status_email($item_idA, 2, $cName, $cEmail);
                 
-		osc_show_flash_message(__('Offer set to Pending', 'offer_button'), 'admin');
+		//osc_show_flash_message(__('Offer set to Pending', 'offer_button'), 'admin');
      	
      	// HACK TO DO A REDIRECT
     	echo '<script>location.href="' . osc_base_url(true).'?page=custom&file=offerButton/offer_byItem.php"</script>';
@@ -84,8 +91,13 @@ switch($promo_action) {
       	$user['s_name'] = $bName;
       	$user['s_email'] = $bEmail;
       }
-                offer_button_send_status_email($item_idA, 3, $user['s_name'], $user['s_email']);
-                osc_add_flash_ok_message(__('Offer Declined', 'offer_button'), 'admin');
+      
+      $cName = $user['s_name'];
+      $cEmail = $user['s_email'];
+
+      offer_button_send_status_email($item_idA, 3, $cName, $cEmail);
+      
+      //osc_add_flash_ok_message(__('Offer Declined', 'offer_button'), 'admin');
 	// HACK TO DO A REDIRECT
     	echo '<script>location.href="' . osc_base_url(true).'?page=custom&file=offerButton/offer_byItem.php"</script>';
     	exit; 

@@ -45,6 +45,30 @@
                 <p>
                     <?php _e('You have to edit your item.php file in your theme folder. Then add the following line &lt;?php offer_button(); ?&gt; anywhere you want the offer button to show up.', 'offer_button'); ?>
                 </p>
+                <h2>
+                    <?php _e('How do I edit the email templates?', 'offer_button'); ?>
+                </h2>
+                <p>
+                    <?php _e('To edit the email templates you have to go under the Email & Alerts menu. Then you will see towards the end of the list two email templates.', 'offer_button'); ?>
+                </p>
+                <h2>
+                    <?php _e('Which email template is for the seller and which is for the buyer?', 'offer_button'); ?>
+                </h2>
+                <p>
+                    <?php _e('The "email_new_offer" template is for the seller and the "email_offer_status" template is for the buyers.', 'offer_button'); ?>
+                </p>
+                <h2>
+                    <?php _e('A list of dynamic tags that can be used in the "email_new_offer" template.', 'offer_button'); ?>
+                </h2>
+                <p>
+                    <?php _e('{ITEM_ID}, {CONTACT_NAME}, {CONTACT_EMAIL}, {WEB_URL}, {ITEM_TITLE}, {ITEM_URL}, {WEB_TITLE}, {OFFER_URL}, {OFFER_VALUE}.', 'offer_button'); ?>
+                </p>
+                <h2>
+                    <?php _e('A list of dynamic tags that can be used in the "email_offer_status" template.', 'offer_button'); ?>
+                </h2>
+                <p>
+                    <?php _e('{ITEM_ID}, {CONTACT_NAME}, {CONTACT_EMAIL}, {WEB_URL}, {ITEM_TITLE}, {ITEM_URL}, {WEB_TITLE}, {SELLER_EMAIL}, {OFFER_STATUS}, {OFFER_STATUS_URL}, {SELLER_PHONE}.', 'offer_button'); ?>
+                </p>
             </fieldset>
         </div>
     </div>

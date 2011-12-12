@@ -43,7 +43,7 @@ if ($userId != $sellerId){
     						$message = __('Please submit an offer greater than ' . $offerCheck['offer_value'] . ' ' . $item_idA['fk_c_currency_code'],'offer_button');
     					} else{
     						//adds offer to item from user 
-                				$conn->osc_dbExec("INSERT INTO %st_offer_button (user_id, seller_id, item_id, offer_value, offer_status, offer_type) VALUES ('%d', '%d', '%d', '%f', '%d', '%d')", DB_TABLE_PREFIX, osc_logged_user_id(), $sellerId, $itemId, $userOffer, '2', $offerType);
+                				$conn->osc_dbExec("INSERT INTO %st_offer_button (user_id, seller_id, item_id, offer_value, offer_status, offer_type, oNew) VALUES ('%d', '%d', '%d', '%f', '%d', '%d', '%d')", DB_TABLE_PREFIX, osc_logged_user_id(), $sellerId, $itemId, $userOffer, '2', $offerType, 1);
                 				
                 				offer_button_send_email($item_idA, $userOffer);
                 				$message = __('Your new offer has been submitted' ,'offer_button');
@@ -53,7 +53,7 @@ if ($userId != $sellerId){
     			}// ends if ($offerCheck)
     			else{
     				//adds offer to item from user 
-                		$conn->osc_dbExec("INSERT INTO %st_offer_button (user_id, seller_id, item_id, offer_value, offer_status, offer_type) VALUES ('%d', '%d', '%d', '%f', '%d', '%d')", DB_TABLE_PREFIX, osc_logged_user_id(), $sellerId, $itemId, $userOffer, '2', $offerType);
+                		$conn->osc_dbExec("INSERT INTO %st_offer_button (user_id, seller_id, item_id, offer_value, offer_status, offer_type, oNew) VALUES ('%d', '%d', '%d', '%f', '%d', '%d', '%d')", DB_TABLE_PREFIX, osc_logged_user_id(), $sellerId, $itemId, $userOffer, '2', $offerType, 1);
                 		offer_button_send_email($item_idA, $userOffer);
                 		$message = __('Your offer has been submitted','offer_button');
     			}
@@ -106,7 +106,7 @@ if ($userId != $sellerId){
     						$message = __('Please submit an offer greater than ' . $offerCheck['offer_value'] . ' ' . $item_idA['fk_c_currency_code'],'offer_button');
     					} else{
     						//adds offer to item from user 
-                				$conn->osc_dbExec("INSERT INTO %st_offer_button (b_email, b_name, seller_id, item_id, offer_value, offer_status, offer_type) VALUES ('%s', '%s', '%d', '%d', '%f', '%d', '%d')", DB_TABLE_PREFIX, $bEmail, $bName, $sellerId, $itemId, $userOffer, '2', $offerType);
+                				$conn->osc_dbExec("INSERT INTO %st_offer_button (b_email, b_name, seller_id, item_id, offer_value, offer_status, offer_type, oNew) VALUES ('%s', '%s', '%d', '%d', '%f', '%d', '%d', '%d')", DB_TABLE_PREFIX, $bEmail, $bName, $sellerId, $itemId, $userOffer, '2', $offerType, 1);
                 				
                 				offer_button_send_email($item_idA, $userOffer);
                 				$message = __('Your new offer has been submitted' ,'offer_button');
@@ -116,7 +116,7 @@ if ($userId != $sellerId){
     			}// ends if ($offerCheck)
     			else{
     				//adds offer to item from user 
-                		$conn->osc_dbExec("INSERT INTO %st_offer_button (b_email, b_name, seller_id, item_id, offer_value, offer_status, offer_type) VALUES ('%s', '%s', '%d', '%d', '%f', '%d', '%d')", DB_TABLE_PREFIX, $bEmail, $bName, $sellerId, $itemId, $userOffer, '2', $offerType);
+                		$conn->osc_dbExec("INSERT INTO %st_offer_button (b_email, b_name, seller_id, item_id, offer_value, offer_status, offer_type, oNew) VALUES ('%s', '%s', '%d', '%d', '%f', '%d', '%d', '%d')", DB_TABLE_PREFIX, $bEmail, $bName, $sellerId, $itemId, $userOffer, '2', $offerType, 1);
                 		offer_button_send_email($item_idA, $userOffer);
                 		$message = __('Your offer has been submitted','offer_button');
     			}

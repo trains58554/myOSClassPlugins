@@ -16,8 +16,13 @@ Plugin update URI: http://www.osclass.org/
 	     return($offerButton);
  	 }
     function offer_user_menu() {
-        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offer_byItem.php') . '" >' . __('View Offers on Your Items', 'offer_button') . '</a></li>';
-        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offer_button.php') . '" >' . __('View Your Submmited Offers', 'offer_button') . '</a></li>' ;
+        $conn = getConnection();
+        $newOffers = $conn->osc_dbFetchResults("SELECT * FROM %st_offer_button WHERE seller_id  = '%d' && sDelete != '%d' && oNew = '%d' ORDER BY id DESC", DB_TABLE_PREFIX, osc_logged_user_id(), 1, 1);
+        $conn->osc_dbExec("UPDATE %st_offer_button SET oNew = '%d' WHERE seller_id = '%d' && sDelete != '%d' && oNew='%d'", DB_TABLE_PREFIX, 0, osc_logged_user_id(), 1, 1);
+        $countOffers = count($newOffers);
+        
+        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offer_byItem.php') . '" >' . __('View Offers on Your Items', 'offer_button') . ' (' . $countOffers . ')</a></li>';
+        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offer_button.php') . '" >' . __('View Your Submitted Offers', 'offer_button') . '</a></li>' ;
     }
        
     function offer_admin_menu() {
@@ -49,6 +54,7 @@ Plugin update URI: http://www.osclass.org/
         osc_set_preference('offerButton_delOff', '0', 'plugin-offer', 'INTEGER');
         osc_set_preference('offerButton_usersOnly', '1', 'plugin-offer', 'INTEGER');
         osc_set_preference('offerButton_trade', '0', 'plugin-offer', 'INTEGER');
+        osc_set_preference('offerButton_text', '1', 'plugin-offer', 'INTEGER');
       } catch (Exception $e) {
         $conn->rollback();
         echo $e->getMessage();
@@ -58,7 +64,7 @@ Plugin update URI: http://www.osclass.org/
     $conn->osc_dbExec("INSERT INTO %st_pages_description (fk_i_pages_id, fk_c_locale_code, s_title, s_text) VALUES (%d, '%s', '{WEB_TITLE} - New offer on: {ITEM_TITLE}', '<p>Hi {CONTACT_NAME}!</p>\r\n<p> </p>\r\n<p>You just got a new offer of \${OFFER_VALUE} on your item {ITEM_TITLE} on {WEB_TITLE}.</p>\r\n<p>Click on the link to view the new offer {OFFER_URL}</p><p> </p>\r\n<p>This is an automatic email, if you have already seen this offer, please ignore this email.</p>\r\n<p> </p>\r\n<p>Thanks</p>')", DB_TABLE_PREFIX, $conn->get_last_id(), osc_language());
     // same as above but different email content :)
     $conn->osc_dbExec("INSERT INTO %st_pages (s_internal_name, b_indelible, dt_pub_date) VALUES ('email_offer_status', 1, NOW() )", DB_TABLE_PREFIX);
-    $conn->osc_dbExec("INSERT INTO %st_pages_description (fk_i_pages_id, fk_c_locale_code, s_title, s_text) VALUES (%d, '%s', '{WEB_TITLE} - Offer staus updated on: {ITEM_TITLE}', '<p>Hi {CONTACT_NAME}!</p>\r\n<p> </p>\r\n<p>Your offer on {ITEM_TITLE} {OFFER_STATUS} on {WEB_TITLE}.</p>\r\n<p>Click on the link to view the staus of your offer {OFFER_STATUS_URL}</p><p> </p>\r\n<p>This is an automatic email, if you have already seen this offer, please ignore this email.</p>\r\n<p> </p>\r\n<p>Thanks</p>')", DB_TABLE_PREFIX, $conn->get_last_id(), osc_language());
+    $conn->osc_dbExec("INSERT INTO %st_pages_description (fk_i_pages_id, fk_c_locale_code, s_title, s_text) VALUES (%d, '%s', '{WEB_TITLE} - Offer status updated on: {ITEM_TITLE}', '<p>Hi {CONTACT_NAME}!</p>\r\n<p> </p>\r\n<p>Your offer on {ITEM_TITLE} {OFFER_STATUS} on {WEB_TITLE}.</p>\r\n<p>Click on the link to view the staus of your offer {OFFER_STATUS_URL}</p><p> </p>\r\n<p>This is an automatic email, if you have already seen this offer, please ignore this email.</p>\r\n<p> </p>\r\n<p>Thanks</p>')", DB_TABLE_PREFIX, $conn->get_last_id(), osc_language());
     $conn->autocommit(true);
     }
 
@@ -88,6 +94,7 @@ Plugin update URI: http://www.osclass.org/
 				osc_delete_preference('offerButton_delOff', 'plugin-offer');
 				osc_delete_preference('offerButton_usersOnly', 'plugin-offer');
 				osc_delete_preference('offerButton_trade', 'plugin-offer');
+				osc_delete_preference('offerButton_text', 'plugin-offer');
 			}   catch (Exception $e) {
 				$conn->rollback();
 				echo $e->getMessage();
@@ -108,16 +115,21 @@ Plugin update URI: http://www.osclass.org/
  	if (osc_is_web_user_logged_in() ){
  	if ($detail['b_offerYes'] == 1){
     	?>
-    	<strong class="offfer_button share"><a id="inline" href='#offer_form' rel='inline'>Place An Offer</a></strong>
+    	<strong class="share"><a id="inline" href='#offer_form' rel='inline'><?php echo osc_offerButton_text_array(); ?></a></strong>
     	 <?php
 	}// ends if offer button enabled
 	}else if(osc_offerButton_usersOnly() == 0){
 		if ($detail['b_offerYes'] == 1){
     	?>
-    	<strong class="offer_button share"><a id="inline" href='#offer_form' rel='inline'>Place An Offer</a></strong>
+    	<strong class="share"><a id="inline" href='#offer_form' rel='inline'><?php echo osc_offerButton_text_array(); ?></a></strong>
     	 <?php
 		}// ends if offer button enabled
 	}//ends else if statement for users only
+	else{
+	   ?>
+	   <strong class="share"><a id="" href='<?php echo osc_user_login_url(); ?>' ><?php _e('Login to Make An Offer', 'offer_button'); ?></a></strong>
+	   <?php
+	}
 	}//ends if statement for button enabled
     }//ends function
     
@@ -146,10 +158,20 @@ Plugin update URI: http://www.osclass.org/
     function osc_offerButton_trade() {
         return(osc_get_preference('offerButton_trade', 'plugin-offer')) ;
     }
+    function osc_offerButton_text() {
+        return(osc_get_preference('offerButton_text', 'plugin-offer')) ;
+    }
+    function osc_offerButton_text_array() {
+        $otext = array();
+        $otext = array( 1 => __('Make An Offer','offer_button'), 2 => __('Place An Offer','offer_button'));
+        $buttonText = $otext[osc_offerButton_text()];
+        return $buttonText;
+    }
       
     function offer_config() {
+      osc_admin_render_plugin(osc_plugin_path(dirname(__FILE__)) . '/offer_config.php') ;
     	// Standard configuration page for plugin which extend item's attributes
-	   osc_plugin_configure_view(osc_plugin_path(__FILE__));
+	   //osc_plugin_configure_view(osc_plugin_path(__FILE__));
     }
     // Offer button js
     function offer_js(){
@@ -185,7 +207,7 @@ Plugin update URI: http://www.osclass.org/
 		if ($("#offer").val().length < 1) {
 		    $("span#offer-message").css({"color":"red"});
                     $("span#offer-message").css({"font-size":"20px"} );
-                    $("span#offer-message").html("Please enter a number");
+                    $("span#offer-message").html("Please enter an amount");
 		    $.fancybox.resize();
 		    return false;
 		}
@@ -201,14 +223,14 @@ Plugin update URI: http://www.osclass.org/
                   $("span#offer-message").html(" ");
                   $("#offer").value="";
                   $.fancybox("<h1 style=\"font-size: 14px;\">" + data.message + "</h1>");
-                  document.getElementById("offer").value = "";  
+                  //document.getElementById("offer").value = "";  
                 }
                 else{
                     $.fancybox.hideActivity();
                     $("span#offer-message").css({"color":"red"});
                     $("span#offer-message").css({"font-size":"20px"} );
                     $("span#offer-message").html(data.message);
-                    document.getElementById("offer").value = "";
+                    //document.getElementById("offer").value = "";
                     $.fancybox.resize();
                 }
                 
@@ -345,6 +367,12 @@ Plugin update URI: http://www.osclass.org/
     	<link href="' . osc_base_url() . "oc-content/plugins/offerButton/css/style.css" . '" rel="stylesheet" type="text/css" />';
     }
     
+    function offer_back_css() {
+       echo "\n";
+    	echo '<!-- offerButton css -->
+    	<link href="' . osc_base_url() . "oc-content/plugins/offerButton/css/offer_back.css" . '" rel="stylesheet" type="text/css" />';
+    }
+    
     function offer_status($offerSt){
     	if ($offerSt == 1) {
     		return __('Accepted','offer_button');
@@ -364,7 +392,9 @@ Plugin update URI: http://www.osclass.org/
 	if($catId!="") {
 		// We check if the category is the same as our plugin
 		if(osc_is_this_category('offer', $catId)) {
-			require_once('form.php');
+		   if(osc_is_web_user_logged_in()){
+			   require_once('form.php');
+			}
 		}
 	}
     }
@@ -390,9 +420,11 @@ Plugin update URI: http://www.osclass.org/
     function offer_item_edit($catId = null, $item_id = null) {
     	$conn = getConnection() ;
     	if(osc_is_this_category('offer', $catId)) {
+    	   if(osc_is_web_user_logged_in()){
 		    $detail = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_item_options WHERE fk_i_item_id = %d", DB_TABLE_PREFIX, $item_id);
 
 		    require_once 'item_edit.php';
+		  }
     	}
     }
     
@@ -459,7 +491,12 @@ Plugin update URI: http://www.osclass.org/
      * Send email to users with offers and statuses
      * 
      * @param integer $item
-     * @param integer $offer_m_status 
+     * @param integer $offer_value 
+     *
+     * @dynamic tags
+     *
+     * '{ITEM_ID}', '{CONTACT_NAME}', '{CONTACT_EMAIL}', '{WEB_URL}', '{ITEM_TITLE}',
+     * '{ITEM_URL}', '{WEB_TITLE}', '{OFFER_URL}', '{OFFER_VALUE}
      */
      
     function offer_button_send_email($item, $offer_value) {
@@ -498,6 +535,18 @@ Plugin update URI: http://www.osclass.org/
         osc_sendMail($emailParams);
     }
     
+    /**
+     * Send email to user with offers and statuses
+     * 
+     * @param integer $item, $offer_status
+     * @param string  $senderName, $senderEmail
+     *
+     * @dynamic tags
+     *
+     * '{ITEM_ID}', '{CONTACT_NAME}', '{CONTACT_EMAIL}', '{WEB_URL}', '{ITEM_TITLE}',
+     * '{ITEM_URL}', '{WEB_TITLE}', '{SELLER_EMAIL}', '{OFFER_STATUS}', '{OFFER_STATUS_URL}', '{SELLER_PHONE}'
+     */
+     
         function offer_button_send_status_email($item, $offer_status, $senderName, $senderEmail) {
        
         $mPages = new Page() ;
@@ -509,11 +558,27 @@ Plugin update URI: http://www.osclass.org/
         } else {
             $content = current($aPage['locale']);
         }
+        
+        $user = User::newInstance()->findByPrimaryKey($item['fk_i_user_id']);
         $itemEmail = $item['s_contact_email'];
+        
+        if($user['s_phone_land'] != '' || $user['s_phone_mobile'] !='') {
+         if($user['s_phone_land'] != '') {
+            $userPhone = $user['s_phone_land'];
+         } else{
+            $userPhone = $user['s_phone_mobile'];
+         }
+        } else {
+           $userPhone = '';
+        }
+        
         if($senderEmail != ''){
         	$item['s_contact_email'] = $senderEmail;
         	$item['s_contact_name'] = $senderName;
         }
+        $sendEmail = $item['s_contact_email'];
+        $sendName = $item['s_contact_name'];
+        
 		  $item_url    = osc_item_url( ) ;
         $item_url    = '<a href="' . $item_url . '" >' . $item_url . '</a>';
         
@@ -531,16 +596,16 @@ Plugin update URI: http://www.osclass.org/
 		  
         $words   = array();
         $words[] = array('{ITEM_ID}', '{CONTACT_NAME}', '{CONTACT_EMAIL}', '{WEB_URL}', '{ITEM_TITLE}',
-            '{ITEM_URL}', '{WEB_TITLE}', '{SELLER_EMAIL}', '{OFFER_STATUS}', '{OFFER_STATUS_URL}');
+            '{ITEM_URL}', '{WEB_TITLE}', '{SELLER_EMAIL}', '{OFFER_STATUS}', '{OFFER_STATUS_URL}', '{SELLER_PHONE}');
         $words[] = array($item['pk_i_id'], $item['s_contact_name'], $item['s_contact_email'], osc_base_url(), $item['s_title'],
-            $item_url, osc_page_title(), $sEmail, $status_offer[$offer_status], $offer_status_url) ;
+            $item_url, osc_page_title(), $sEmail, $status_offer[$offer_status], $offer_status_url, $userPhone) ;
 
         $title = osc_mailBeauty($content['s_title'], $words) ;
         $body  = osc_mailBeauty($content['s_text'], $words) ;
 
         $emailParams =  array('subject'  => $title
-                             ,'to'       => $item['s_contact_email']
-                             ,'to_name'  => $item['s_contact_name']
+                             ,'to'       => $sendEmail
+                             ,'to_name'  => $sendName
                              ,'body'     => $body
                              ,'alt_body' => $body);
 
@@ -574,6 +639,9 @@ Plugin update URI: http://www.osclass.org/
     
     // hook for header
     osc_add_hook('header', 'offer_css');
+    
+    // hook for admin header
+    osc_add_hook('admin_header', 'offer_back_css');
     
     // When publishing an item we show an extra form with more attributes
     osc_add_hook('item_form', 'offer_form');

@@ -4,8 +4,8 @@
     $itemsPerPage = (Params::getParam('itemsPerPage') != '') ? Params::getParam('itemsPerPage') : 5;
     $iPage        = (Params::getParam('iPage') != '') ? Params::getParam('iPage') : 0;
 	 $search = new Search();
-    $search->addConditions(sprintf("%st_offer_button.user_id = %d", DB_TABLE_PREFIX, $i_userId));
-    $search->addConditions(sprintf("%st_offer_button.item_id = %st_item.pk_i_id", DB_TABLE_PREFIX, DB_TABLE_PREFIX));
+    $search->addConditions(sprintf("%st_offer_button.user_id = %d ", DB_TABLE_PREFIX, $i_userId));
+    $search->addConditions(sprintf("%st_offer_button.item_id = %st_item.pk_i_id AND %st_offer_button.sDelete != 1", DB_TABLE_PREFIX, DB_TABLE_PREFIX, DB_TABLE_PREFIX));
     $search->addTable(sprintf("%st_offer_button", DB_TABLE_PREFIX));
     $search->page($iPage, $itemsPerPage);
 
@@ -43,7 +43,7 @@
                                         <br />
                                         <?php 
                                         $conn   = getConnection();
-                                        $offers = $conn->osc_dbFetchResults("SELECT * FROM %st_offer_button WHERE item_id  = '%d' AND user_id='%d' ORDER BY id DESC", DB_TABLE_PREFIX, osc_item_id(),osc_logged_user_id()); 
+                                        $offers = $conn->osc_dbFetchResults("SELECT * FROM %st_offer_button WHERE item_id  = '%d' AND user_id='%d' AND sDelete != '%d' ORDER BY id DESC", DB_TABLE_PREFIX, osc_item_id(),osc_logged_user_id(), 1); 
                                         $locked = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_user_locked WHERE seller_id  = '%d' AND user_id = '%d'", DB_TABLE_PREFIX, $offer['seller_id'], osc_logged_user_id() );
 	                                     $reason = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_reason WHERE id = '%d'", DB_TABLE_PREFIX, $locked['readon_code'] ); ?>
                                         <div class="dataTables_wrapper">
