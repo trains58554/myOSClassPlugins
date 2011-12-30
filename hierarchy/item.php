@@ -49,7 +49,6 @@
         <script type="text/javascript" src="<?php echo osc_current_web_theme_js_url('jquery.validate.min.js') ; ?>"></script>
     </head>
     <body>
-    <div class="containerbg">
         <div class="container">
             <?php osc_current_web_theme_path('header.php') ; ?>
             <div class="content item">
@@ -73,13 +72,16 @@
                         <strong><?php echo osc_item_category() ; ?></strong>
                         <em class="publish"><?php if ( osc_item_pub_date() != '' ) echo __('Published date', 'modern') . ': ' . osc_format_date( osc_item_pub_date() ) ; ?></em>
                         <em class="update"><?php if ( osc_item_mod_date() != '' ) echo __('Modified date', 'modern') . ': ' . osc_format_date( osc_item_mod_date() ) ; ?></em>
+                        
                     </div>
+                    <?php if(function_exists('offer_button')){ offer_button();}?>
                     <ul id="item_location">
                         <?php if ( osc_item_country() != "" ) { ?><li><?php _e("Country", 'modern'); ?>: <strong><?php echo osc_item_country() ; ?></strong></li><?php } ?>
                         <?php if ( osc_item_region() != "" ) { ?><li><?php _e("Region", 'modern'); ?>: <strong><?php echo osc_item_region() ; ?></strong></li><?php } ?>
                         <?php if ( osc_item_city() != "" ) { ?><li><?php _e("City", 'modern'); ?>: <strong><?php echo osc_item_city() ; ?></strong></li><?php } ?>
                         <?php if ( osc_item_city_area() != "" ) { ?><li><?php _e("City area", 'modern'); ?>: <strong><?php echo osc_item_city_area() ; ?></strong></li><?php } ?>
                         <?php if ( osc_item_address() != "" ) { ?><li><?php _e("Address", 'modern') ; ?>: <strong><?php echo osc_item_address() ; ?></strong></li><?php } ?>
+                        <?php echo ' Views ' . osc_item_views(); ?>
                     </ul>
                     <div id="description">
                         <p><?php echo osc_item_description() ; ?></p>
@@ -88,23 +90,27 @@
                                 <br/>
                                 <div class="meta_list">
                                     <?php while ( osc_has_item_meta() ) { ?>
-                                        <div class="meta">
-                                            <strong><?php echo osc_item_meta_name(); ?>:</strong> <?php echo osc_item_meta_value(); ?>
-           
-                                        </div>
+                                        <?php if(osc_item_meta_value()!='') { ?>
+                                            <div class="meta">
+                                                <strong><?php echo osc_item_meta_name(); ?>:</strong> <?php echo osc_item_meta_value(); ?>
+                                            </div>
+                                        <?php } ?>
                                     <?php } ?>
-                                    
                                 </div>
                             <?php } ?>
                         </div>
+                        
                         <?php osc_run_hook('item_detail', osc_item() ) ; ?>
                         <p class="contact_button">
                             <?php if( !osc_item_is_expired () ) { ?>
-                            <?php     if(osc_reg_user_can_contact() && osc_is_web_user_logged_in() || !osc_reg_user_can_contact() ) { ?>
-                            <strong><a href="#contact"><?php _e('Contact seller', 'modern') ; ?></a></strong>
+                            <?php if( !( ( osc_logged_user_id() == osc_item_user_id() ) && osc_logged_user_id() != 0 ) ) { ?>
+                                <?php     if(osc_reg_user_can_contact() && osc_is_web_user_logged_in() || !osc_reg_user_can_contact() ) { ?>
+                                    <strong><a href="#contact"><?php _e('Contact seller', 'modern') ; ?></a></strong>
+                                <?php     } ?>
                             <?php     } ?>
                             <?php } ?>
-                            <strong class="share"><a href="<?php echo osc_item_send_friend_url() ; ?>" rel="nofollow"><?php _e('Share', 'modern') ; ?></a></strong> <strong class="share"><?php watchlist(); ?></strong> <?php seller_post(); ?>
+                            <strong class="share"><a href="<?php echo osc_item_send_friend_url() ; ?>" rel="nofollow"><?php _e('Share', 'modern') ; ?></a></strong>
+                            
                         </p>
                         <?php osc_run_hook('location') ; ?>
                     </div>
@@ -180,55 +186,72 @@
                         </div>
                         <?php } ?>
                     <?php } ?>
-                    <?php if( !osc_item_is_expired () ) { ?>
-                    <?php     if(osc_reg_user_can_contact() && osc_is_web_user_logged_in() || !osc_reg_user_can_contact() ) { ?>
                     <div id="contact">
                         <h2><?php _e("Contact publisher", 'modern') ; ?></h2>
-                        <p class="name"><?php _e('Name', 'modern') ?>: <?php echo osc_item_contact_name(); ?></p>
-                        <?php if(osc_item_show_email()) { ?>
-                        <p class="email"><?php _e('E-mail', 'modern'); ?>: <?php echo osc_item_contact_email(); ?></p>
+                        <?php if( osc_item_is_expired () ) { ?>
+                            <p>
+                                <?php _e('The item is expired. You cannot contact the publisher.', 'modern') ; ?>
+                            </p>
+                        <?php } else if( ( osc_logged_user_id() == osc_item_user_id() ) && osc_logged_user_id() != 0 ) { ?>
+                            <p>
+                                <?php _e("It's your own item, you cannot contact the publisher.", 'modern') ; ?>
+                            </p>
+                        <?php } else if( osc_reg_user_can_contact() && !osc_is_web_user_logged_in() ) { ?>
+                            <p>
+                                <?php _e("You must login or register a new free account in order to contact the advertiser", 'modern') ; ?>
+                            </p>
+                            <p class="contact_button">
+                                <strong><a href="<?php echo osc_user_login_url() ; ?>"><?php _e('Login', 'modern') ; ?></a></strong>
+                                <strong><a href="<?php echo osc_register_account_url() ; ?>"><?php _e('Register for a free account', 'modern'); ?></a></strong>
+                            </p>
+                        <?php } else { ?>
+                            <?php if( osc_item_user_id() != null ) { ?>
+                                <p class="name"><?php _e('Name', 'modern') ?>: <a href="<?php echo osc_user_public_profile_url( osc_item_user_id() ); ?>" ><?php echo osc_item_contact_name(); ?></a></p>
+                            <?php } else { ?>
+                                <p class="name"><?php _e('Name', 'modern') ?>: <?php echo osc_item_contact_name(); ?></p>
+                            <?php } ?>
+                            <?php if( osc_item_show_email() ) { ?>
+                                <p class="email"><?php _e('E-mail', 'modern'); ?>: <?php echo osc_item_contact_email(); ?></p>
+                            <?php } ?>
+                            <?php if ( osc_user_phone() != '' ) { ?>
+                                <p class="phone"><?php _e("Tel", 'modern'); ?>.: <?php echo osc_user_phone() ; ?></p>
+                            <?php } ?>
+                            <ul id="error_list"></ul>
+                            <?php ContactForm::js_validation(); ?>
+                            <form action="<?php echo osc_base_url(true) ; ?>" method="post" name="contact_form" id="contact_form">
+                                <?php osc_prepare_user_info() ; ?>
+                                <fieldset>
+                                    <label for="yourName"><?php _e('Your name', 'modern') ; ?>:</label> <?php ContactForm::your_name(); ?>
+                                    <label for="yourEmail"><?php _e('Your e-mail address', 'modern') ; ?>:</label> <?php ContactForm::your_email(); ?>
+                                    <label for="phoneNumber"><?php _e('Phone number', 'modern') ; ?> (<?php _e('optional', 'modern'); ?>):</label> <?php ContactForm::your_phone_number(); ?>
+                                    <label for="message"><?php _e('Message', 'modern') ; ?>:</label> <?php ContactForm::your_message(); ?>
+                                    <input type="hidden" name="action" value="contact_post" />
+                                    <input type="hidden" name="page" value="item" />
+                                    <input type="hidden" name="id" value="<?php echo osc_item_id() ; ?>" />
+                                    <?php if( osc_recaptcha_public_key() ) { ?>
+                                    <script type="text/javascript">
+                                        var RecaptchaOptions = {
+                                            theme : 'custom',
+                                            custom_theme_widget: 'recaptcha_widget'
+                                        };
+                                    </script>
+                                    <style type="text/css"> div#recaptcha_widget, div#recaptcha_image > img { width:280px; } </style>
+                                    <div id="recaptcha_widget">
+                                        <div id="recaptcha_image"><img /></div>
+                                        <span class="recaptcha_only_if_image"><?php _e('Enter the words above','modern'); ?>:</span>
+                                        <input type="text" id="recaptcha_response_field" name="recaptcha_response_field" />
+                                        <div><a href="javascript:Recaptcha.showhelp()"><?php _e('Help', 'modern'); ?></a></div>
+                                    </div>
+                                    <?php } ?>
+                                    <?php osc_show_recaptcha(); ?>
+                                    <button type="submit"><?php _e('Send', 'modern') ; ?></button>
+                                </fieldset>
+                            </form>
                         <?php } ?>
-                        <?php if ( osc_user_phone() != '' ) { ?>
-                        <p class="phone"><?php _e("Tel", 'modern'); ?>.: <?php echo osc_user_phone() ; ?></p>
-                        <?php } ?>
-                        <ul id="error_list"></ul>
-                        <?php ContactForm::js_validation(); ?>
-                        <form action="<?php echo osc_base_url(true) ; ?>" method="post" name="contact_form" id="contact_form">
-                            <?php osc_prepare_user_info() ; ?>
-                            <fieldset>
-                                <label for="yourName"><?php _e('Your name (optional)', 'modern') ; ?>:</label> <?php ContactForm::your_name(); ?>
-                                <label for="yourEmail"><?php _e('Your e-mail address', 'modern') ; ?>:</label> <?php ContactForm::your_email(); ?>
-                                <label for="phoneNumber"><?php _e('Phone number', 'modern') ; ?>:</label> <?php ContactForm::your_phone_number(); ?>
-                                <label for="message"><?php _e('Message', 'modern') ; ?>:</label> <?php ContactForm::your_message(); ?>
-                                <input type="hidden" name="action" value="contact_post" />
-                                <input type="hidden" name="page" value="item" />
-                                <input type="hidden" name="id" value="<?php echo osc_item_id() ; ?>" />
-                                <?php if( osc_recaptcha_public_key() ) { ?>
-                                <script type="text/javascript">
-                                    var RecaptchaOptions = {
-                                        theme : 'custom',
-                                        custom_theme_widget: 'recaptcha_widget'
-                                    };
-                                </script>
-                                <style type="text/css"> div#recaptcha_widget, div#recaptcha_image > img { width:280px; } </style>
-                                <div id="recaptcha_widget">
-                                    <div id="recaptcha_image"><img /></div>
-                                    <span class="recaptcha_only_if_image"><?php _e('Enter the words above','modern'); ?>:</span>
-                                    <input type="text" id="recaptcha_response_field" name="recaptcha_response_field" />
-                                    <div><a href="javascript:Recaptcha.showhelp()"><?php _e('Help', 'modern'); ?></a></div>
-                                </div>
-                                <?php } ?>
-                                <?php osc_show_recaptcha(); ?>
-                                <button type="submit"><?php _e('Send', 'modern') ; ?></button>
-                            </fieldset>
-                        </form>
                     </div>
-                    <?php     } ?>
-                    <?php } ?>
                 </div>
             </div>
             <?php osc_current_web_theme_path('footer.php') ; ?>
-        </div>
         </div>
         <?php osc_show_flash_message() ; ?>
         <?php osc_run_hook('footer'); ?>

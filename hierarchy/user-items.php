@@ -43,12 +43,18 @@
                         <h3><?php _e('You don\'t have any items yet', 'modern'); ?></h3>
                     <?php } else { ?>
                         <?php while(osc_has_items()) { ?>
+                           <?php $conn = getConnection();
+                                 $itemViews = $conn->osc_dbFetchResults("SELECT * FROM %st_item_stats WHERE fk_i_item_id = '%d'", DB_TABLE_PREFIX, osc_item_id()); 
+                                 foreach ($itemViews as $itemView) {
+                                          $totalViews = $totalViews + $itemView['i_num_views'];
+                                       }
+                                 ?>
                                 <div class="item" >
                                         <h3>
                                             <a href="<?php echo osc_item_url(); ?>"><?php echo osc_item_title(); ?></a>
                                         </h3>
                                         <p>
-                                        <?php _e('Publication date', 'modern') ; ?>: <?php echo osc_format_date(osc_item_pub_date()) ; ?><br />
+                                        <?php _e('Publication date', 'modern') ; ?>: <?php echo osc_format_date(osc_item_pub_date()) . ' Views ' . $totalViews; $totalViews = 0; ?><br />
                                         <?php if( osc_price_enabled_at_items() ) { _e('Price', 'modern') ; ?>: <?php echo osc_format_price(osc_item_price()); } ?>
                                         </p>
                                         <p class="options">
