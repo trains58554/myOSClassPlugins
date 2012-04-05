@@ -10,96 +10,73 @@ Author Email: siouxfallsrummages@gmail.com
 Short Name: offer
 Plugin update URI: http://www.osclass.org/
 */
+
+    require('ModelOffer.php');
+    
  	 function obVersion() {
  	    $pluginInfo = osc_plugin_get_info('offerButton/index.php');
  	 	 $offerButton = $pluginInfo['version'];
 	     return($offerButton);
  	 }
     function offer_user_menu() {
-        $conn = getConnection();
-        $newOffers = $conn->osc_dbFetchResults("SELECT * FROM %st_offer_button WHERE seller_id  = '%d' && sDelete != '%d' && oNew = '%d' ORDER BY id DESC", DB_TABLE_PREFIX, osc_logged_user_id(), 1, 1);
-        $conn->osc_dbExec("UPDATE %st_offer_button SET oNew = '%d' WHERE seller_id = '%d' && sDelete != '%d' && oNew='%d'", DB_TABLE_PREFIX, 0, osc_logged_user_id(), 1, 1);
+        $newOffers = ModelOffer::newInstance()->getOffers('seller_id', osc_logged_user_id(), 'oNew', 1, 1, 'id', 'DESC', NULL);
+        ModelOffer::newInstance()->updateOfferNew(osc_logged_user_id());        
         $countOffers = count($newOffers);
         
-        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offer_byItem.php') . '" >' . __('View Offers on Your Items', 'offer_button') . ' (' . $countOffers . ')</a></li>';
-        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offer_button.php') . '" >' . __('View Your Submitted Offers', 'offer_button') . '</a></li>' ;
+        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offer_byItem.php') . '" >' . __('View Offers on Your Items', 'offerButton') . ' (' . $countOffers . ')</a></li>';
+        echo '<li class="" ><a href="' . osc_render_file_url(osc_plugin_folder(__FILE__) . 'offer_button.php') . '" >' . __('View Your Submitted Offers', 'offerButton') . '</a></li>' ;
     }
        
     function offer_admin_menu() {
    	 echo '<h3><a href="#">Offer Button</a></h3><ul>';
    	    	 	 
-        echo '<li class="" ><a href="' . osc_admin_render_plugin_url('offerButton/offer_config.php') . '" > &raquo; '. __('Configure', 'offer_button') . '</a></li>' .
-        '<li class="" ><a href="' . osc_admin_render_plugin_url('offerButton/help.php') . '" >&raquo; ' . __('F.A.Q. / Help', 'offer_button') . '</a></li>';
-        if(osc_offerButton_locking() == 1 || 1 == 1) { echo '<li class="" ><a href="' . osc_admin_render_plugin_url('offerButton/reason_conf.php') . '" >&raquo; ' . __('Manage Reasons', 'offer_button') . '</a></li>';}
+        echo '<li class="" ><a href="' . osc_admin_render_plugin_url('offerButton/offer_config.php') . '" > &raquo; '. __('Configure', 'offerButton') . '</a></li>' .
+        '<li class="" ><a href="' . osc_admin_render_plugin_url('offerButton/help.php') . '" >&raquo; ' . __('F.A.Q. / Help', 'offerButton') . '</a></li>';
+        if(osc_offerButton_locking() == 1 || 1 == 1) { echo '<li class="" ><a href="' . osc_admin_render_plugin_url('offerButton/reason_conf.php') . '" >&raquo; ' . __('Manage Reasons', 'offerButton') . '</a></li>';}
         echo '</ul>';
     }
            
     function offer_call_after_install() {
+       if(OSCLASS_VERSION >= 2.3) {
+       
         $pluginInfo = osc_plugin_get_info('offerButton/index.php');
-        $conn = getConnection() ;
-        $path = osc_plugin_resource('offerButton/struct.sql') ;
-        $sql  = file_get_contents($path) ;
-        $conn->osc_dbImportSQL($sql) ;
+       
+        ModelOffer::newInstance()->import('offerButton/struct.sql');
         
-        $conn = getConnection();
-	   $conn->autocommit(false);
-		try {
-        $conn->commit();
         osc_set_preference('offerButton_enabled', '1', 'plugin-offer', 'INTEGER');
         osc_set_preference('offerButton_lastThree', '0', 'plugin-offer', 'INTEGER');
         //Added in version 2.0
         osc_set_preference('offerButton_version', $pluginInfo['version'] , 'plugin-offer', 'INTEGER');
         osc_set_preference('offerButton_locking', '0', 'plugin-offer', 'INTEGER');
         osc_set_preference('offerButton_email', '1', 'plugin-offer', 'INTEGER');
+        osc_set_preference('offerButton_email_temps', '1', 'plugin-offer', 'INTEGER');
         osc_set_preference('offerButton_delOff', '0', 'plugin-offer', 'INTEGER');
         osc_set_preference('offerButton_usersOnly', '1', 'plugin-offer', 'INTEGER');
         osc_set_preference('offerButton_trade', '0', 'plugin-offer', 'INTEGER');
         osc_set_preference('offerButton_text', '1', 'plugin-offer', 'INTEGER');
-      } catch (Exception $e) {
-        $conn->rollback();
-        echo $e->getMessage();
-      }
-    //used for email templates
-    $conn->osc_dbExec("INSERT INTO %st_pages (s_internal_name, b_indelible, dt_pub_date) VALUES ('email_new_offer', 1, NOW() )", DB_TABLE_PREFIX);
-    $conn->osc_dbExec("INSERT INTO %st_pages_description (fk_i_pages_id, fk_c_locale_code, s_title, s_text) VALUES (%d, '%s', '{WEB_TITLE} - New offer on: {ITEM_TITLE}', '<p>Hi {CONTACT_NAME}!</p>\r\n<p> </p>\r\n<p>You just got a new offer of \${OFFER_VALUE} on your item {ITEM_TITLE} on {WEB_TITLE}.</p>\r\n<p>Click on the link to view the new offer {OFFER_URL}</p><p> </p>\r\n<p>This is an automatic email, if you have already seen this offer, please ignore this email.</p>\r\n<p> </p>\r\n<p>Thanks</p>')", DB_TABLE_PREFIX, $conn->get_last_id(), osc_language());
-    // same as above but different email content :)
-    $conn->osc_dbExec("INSERT INTO %st_pages (s_internal_name, b_indelible, dt_pub_date) VALUES ('email_offer_status', 1, NOW() )", DB_TABLE_PREFIX);
-    $conn->osc_dbExec("INSERT INTO %st_pages_description (fk_i_pages_id, fk_c_locale_code, s_title, s_text) VALUES (%d, '%s', '{WEB_TITLE} - Offer status updated on: {ITEM_TITLE}', '<p>Hi {CONTACT_NAME}!</p>\r\n<p> </p>\r\n<p>Your offer on {ITEM_TITLE} {OFFER_STATUS} on {WEB_TITLE}.</p>\r\n<p>Click on the link to view the staus of your offer {OFFER_STATUS_URL}</p><p> </p>\r\n<p>This is an automatic email, if you have already seen this offer, please ignore this email.</p>\r\n<p> </p>\r\n<p>Thanks</p>')", DB_TABLE_PREFIX, $conn->get_last_id(), osc_language());
-    $conn->autocommit(true);
+        
+        ModelOffer::newInstance()->insertEmailTemplates();
+       } else {
+          throw new Exception("Please upgrade your OSClass install to 2.3 or greater.");
+       }
     }
 
     function offer_call_after_uninstall() {
-        $conn = getConnection() ;
-        $conn->osc_dbExec('DROP TABLE %st_offer_button', DB_TABLE_PREFIX) ;
-        $conn->osc_dbExec('DROP TABLE %st_offer_item_options', DB_TABLE_PREFIX) ;
-        $conn->osc_dbExec('DROP TABLE %st_offer_reason', DB_TABLE_PREFIX) ;
-        $conn->osc_dbExec('DROP TABLE %st_offer_user_locked', DB_TABLE_PREFIX) ;
-        $page_id = $conn->osc_dbFetchResult("SELECT * FROM %st_pages WHERE s_internal_name = 'email_new_offer'", DB_TABLE_PREFIX);
-        $conn->osc_dbExec("DELETE FROM %st_pages_description WHERE fk_i_pages_id = %d", DB_TABLE_PREFIX, $page_id['pk_i_id']);
-        $conn->osc_dbExec("DELETE FROM %st_pages WHERE s_internal_name = 'email_new_offer'", DB_TABLE_PREFIX);
-        $page_id = $conn->osc_dbFetchResult("SELECT * FROM %st_pages WHERE s_internal_name = 'email_offer_status'", DB_TABLE_PREFIX);
-        $conn->osc_dbExec("DELETE FROM %st_pages_description WHERE fk_i_pages_id = %d", DB_TABLE_PREFIX, $page_id['pk_i_id']);
-        $conn->osc_dbExec("DELETE FROM %st_pages WHERE pk_i_id = %d", DB_TABLE_PREFIX, $page_id['pk_i_id']);
-        $conn->osc_dbExec("DELETE FROM %st_pages WHERE s_internal_name = 'email_offer_status'", DB_TABLE_PREFIX);
+        ModelOffer::newInstance()->removeEmailTemplates();
+
+        ModelOffer::newInstance()->uninstall();      
         
-        $conn = getConnection();
-		 $conn->autocommit(false);
-			try {
 				osc_delete_preference('offerButton_enabled', 'plugin-offer');
 				osc_delete_preference('offerButton_lastThree', 'plugin-offer');
 				//added in version 2.0
 				osc_delete_preference('offerButton_version', 'plugin-offer');
 				osc_delete_preference('offerButton_locking', 'plugin-offer');
 				osc_delete_preference('offerButton_email', 'plugin-offer');
+				osc_delete_preference('offerButton_email_temps', 'plugin-offer');
 				osc_delete_preference('offerButton_delOff', 'plugin-offer');
 				osc_delete_preference('offerButton_usersOnly', 'plugin-offer');
 				osc_delete_preference('offerButton_trade', 'plugin-offer');
 				osc_delete_preference('offerButton_text', 'plugin-offer');
-			}   catch (Exception $e) {
-				$conn->rollback();
-				echo $e->getMessage();
-			}
-			$conn->autocommit(true);
 					
     }
 
@@ -108,10 +85,13 @@ Plugin update URI: http://www.osclass.org/
     }
     
     function offer_button() {
-    if(osc_offerButton_enabled() == 1){
-    	$conn = getConnection() ;
-		$detail = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_item_options WHERE fk_i_item_id = %d", DB_TABLE_PREFIX, osc_item_id());
-	 
+    if(osc_offerButton_enabled() == 1){    
+	    $detail = ModelOffer::newInstance()->getOfferItemOption(osc_item_id());
+	 // checks to see if the seller has accepted an offer
+	 // if yes then it does not display the offer button.
+	 $acceptedOffer = ModelOffer::newInstance()->getOffer('item_id', osc_item_id(), 'offer_status', 1, 1, 'id', 'DESC', NULL);
+	 if(!$acceptedOffer) {
+	
  	if (osc_is_web_user_logged_in() ){
  	if ($detail['b_offerYes'] == 1){
     	?>
@@ -126,9 +106,11 @@ Plugin update URI: http://www.osclass.org/
 		}// ends if offer button enabled
 	}//ends else if statement for users only
 	else{
+	   Session::newInstance()->_setReferer(osc_user_login_url() . '&http_referer=' . osc_base_url(true) . '?page=item&id=' . osc_item_id() );
 	   ?>
-	   <strong class="share"><a id="" href='<?php echo osc_user_login_url(); ?>' ><?php _e('Login to Make An Offer', 'offer_button'); ?></a></strong>
+	   <strong class="share"><a id="" href='<?php echo osc_user_login_url(); ?>' ><?php _e('Login to Make An Offer', 'offerButton'); ?></a></strong>
 	   <?php
+	}
 	}
 	}//ends if statement for button enabled
     }//ends function
@@ -145,6 +127,9 @@ Plugin update URI: http://www.osclass.org/
     }
     function osc_offerButton_email() {
         return(osc_get_preference('offerButton_email', 'plugin-offer')) ;
+    }
+    function osc_offerButton_email_temps() {
+        return(osc_get_preference('offerButton_email_temps', 'plugin-offer')) ;
     }
     function osc_offerButton_delOff() {
         return(osc_get_preference('offerButton_delOff', 'plugin-offer')) ;
@@ -163,9 +148,35 @@ Plugin update URI: http://www.osclass.org/
     }
     function osc_offerButton_text_array() {
         $otext = array();
-        $otext = array( 1 => __('Make An Offer','offer_button'), 2 => __('Place An Offer','offer_button'));
+        $otext = array( 1 => __('Make An Offer','offerButton'), 2 => __('Place An Offer','offerButton'));
         $buttonText = $otext[osc_offerButton_text()];
         return $buttonText;
+    }
+    /**
+     * Get if user is on offer button.php page
+     *
+     * @return boolean
+     */
+    function offer_button_page() {
+      $location = Rewrite::newInstance()->get_location();
+      $file     = rtrim(Params::getParam('file'),'?');
+      if($location == 'custom' && $file == 'offerButton/offer_button.php'){
+         return TRUE;
+      }
+      return FALSE;
+    }
+    /**
+     * Get if user is on offer_byItem.php page
+     *
+     * @return boolean
+     */
+    function offer_byItem_page() {
+      $location = Rewrite::newInstance()->get_location();
+      $file     = rtrim(Params::getParam('file'),'?');
+      if($location == 'custom' && $file == 'offerButton/offer_byItem.php'){
+         return TRUE;
+      }
+      return FALSE;
     }
       
     function offer_config() {
@@ -175,10 +186,12 @@ Plugin update URI: http://www.osclass.org/
     }
     // Offer button js
     function offer_js(){
-    echo "\n";
-    echo '<!-- offerButton js -->
+       if(osc_is_ad_page() ) {
+    ?>
+      <!-- offerButton js -->
     	<script type="text/javascript">
-    	   $(document).ready(function(){
+      ( function($) { 
+         $(document).ready(function(){  
 	        $("#offerType").change(function(){
             var offerType = $(this).val();
             if(offerType ==1 || offerType ==3) {
@@ -189,7 +202,9 @@ Plugin update URI: http://www.osclass.org/
             }
             });
          });
-         
+       } ) ( jQuery );
+       
+       ( function($) { 
      		$(document).ready(function() {
           	$("a[rel=inline]").fancybox({
           		"overlayOpacity"	:	0.5,
@@ -200,7 +215,8 @@ Plugin update URI: http://www.osclass.org/
 			
           	})
      	     });
-     	     
+     	   } ) ( jQuery );
+     	 ( function($) {    
 	     $(document).ready(function(){
     	     $("#offer_form").bind("submit", function(){
       if ($("#offerType").val() !=2 ) {
@@ -213,23 +229,27 @@ Plugin update URI: http://www.osclass.org/
 		}
 		}
 
-		$.fancybox.showActivity();
+      
+
+		//$.fancybox.showActivity();
 
         		$.post(
-		            "' . osc_ajax_plugin_url("offerButton/ajax-offer.php") . '",
+		            "<?php echo osc_ajax_plugin_url('offerButton/ajax-offer.php'); ?>",
         		    $("#offer_form").serialize(),
         		    function(data){
                 if (data.success){
                   $("span#offer-message").html(" ");
                   $("#offer").value="";
                   $.fancybox("<h1 style=\"font-size: 14px;\">" + data.message + "</h1>");
+                  $('#offer').val('');
                   //document.getElementById("offer").value = "";  
                 }
                 else{
-                    $.fancybox.hideActivity();
+                    //$.fancybox.hideActivity();
                     $("span#offer-message").css({"color":"red"});
                     $("span#offer-message").css({"font-size":"20px"} );
                     $("span#offer-message").html(data.message);
+                    $('#offer').val('');
                     //document.getElementById("offer").value = "";
                     $.fancybox.resize();
                 }
@@ -239,21 +259,25 @@ Plugin update URI: http://www.osclass.org/
         		);
     		});
 		});
-	</script>';
-	  ?>
+	} ) ( jQuery );
+	</script>
+	
 	  <script type="text/javascript">
+	  ( function($) {
         $(document).ready(function() {
 	        if( $("form[name=item]").length > 0 ) {
 					
            }
         }) ;
+    } ) ( jQuery );
     </script>
     <!-- end offerButton js -->
     <!-- start offerbutton form code -->
     <?php 
-    $conn = getConnection();
-    $lastThree = $conn->osc_dbFetchResults("SELECT * FROM %st_offer_button WHERE item_id= '%d' ORDER BY id DESC LIMIT 3", DB_TABLE_PREFIX, osc_item_id());
-    $offerTrade = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_item_options WHERE fk_i_item_id= '%d'", DB_TABLE_PREFIX, osc_item_id());
+    // Database connection using the new DAO Model.
+    $lastThree = ModelOffer::newInstance()->getOffers('item_id', osc_item_id(), NULL, NULL, 1, 'id', 'DESC');   
+    $offerTrade = ModelOffer::newInstance()->getOfferItemOption(osc_item_id());
+    
     if(osc_offerButton_usersOnly() ==1 || osc_is_web_user_logged_in() ){ ?>
     <div style="display:none">
 	<form id="offer_form" method="post"  onsubmit="return false;" >
@@ -264,28 +288,28 @@ Plugin update URI: http://www.osclass.org/
 	    	<span id="offer-message"></span>
 	    	<?php if(osc_offerButton_lastThree()){ ?>
 	    	<h3 id="offer-last" style="text-align: center;">
-	    	<?php _e('Top 3 offers','offer_button');?> <br />
+	    	<?php _e('Top 3 offers','offerButton');?> <br />
 	    		<?php foreach($lastThree as $a){
 	    			printf('%01.2f'. osc_item_currency() . '<br />', $a['offer_value']);
 	    		} ?>
 	    	</h3>
 	    	<?php } ?>
-	    	<p><h3><?php _e('Please enter a your offer','offer_button'); ?></h3></p>
+	    	<p><h3><?php _e('Please enter a your offer','offerButton'); ?></h3></p>
 		<p class="offerP">
 		<?php if($offerTrade['b_offerTrade'] == 1 && osc_offerButton_trade() == 1) { ?>
-		   <label for="offerType"><?php _e('Offer Type','offer_button'); ?></label>
+		   <label for="offerType"><?php _e('Offer Type','offerButton'); ?></label>
 		   <select name="offerType" id="offerType">
-		       <option value="1"><?php _e('Monetary Offer','offer_button'); ?></option>
-		       <option value="2"><?php _e('Trade Offer','offer_button'); ?></option>
-		       <option value="3"><?php _e('Monetary & Trade Offer','offer_button'); ?></option>
+		       <option value="1"><?php _e('Monetary Offer','offerButton'); ?></option>
+		       <option value="2"><?php _e('Trade Offer','offerButton'); ?></option>
+		       <option value="3"><?php _e('Monetary & Trade Offer','offerButton'); ?></option>
 		   </select>
 		<?php } ?>
-			<label for="offer" id="offerL"><?php _e('Offer','offer_button'); ?>: </label>
+			<label for="offer" id="offerL"><?php _e('Offer','offerButton'); ?>: </label>
 			<input type="text" id="offer" name="offer" size="10" /><?php echo osc_item_currency();?>
 		</p>
 		<br />
 		<p>
-			<input type="submit" value="<?php _e('Submit Offer','offer_button'); ?>" />
+			<input type="submit" value="<?php _e('Submit Offer','offerButton'); ?>" />
 		</p>
 	</form>
 	</div>
@@ -301,18 +325,18 @@ Plugin update URI: http://www.osclass.org/
 	    		<span id="offer-message"></span>
 	    		<?php if(osc_offerButton_lastThree()){ ?>
 	    		<h3 id="offer-last" style="text-align: center;">
-	    		<?php _e('Top 3 offers','offer_button');?> <br />
+	    		<?php _e('Top 3 offers','offerButton');?> <br />
 	    			<?php foreach($lastThree as $a){
 	    				printf('%01.2f'. osc_item_currency() . '<br />', $a['offer_value']);
 	    			} ?>
 	    		</h3>
 	    		<?php } ?>
-	    		<p><h3><?php _e('Please enter a your offer','offer_button'); ?></h3></p>
+	    		<p><h3><?php _e('Please enter a your offer','offerButton'); ?></h3></p>
 			<p>
 			<table class="offerRows"> 
 				<tr>
 					<td> 
-					<label for="name"><?php _e('Enter your Name','offer_button'); ?>: </label>
+					<label for="name"><?php _e('Enter your Name','offerButton'); ?>: </label>
 					</td>
 					<td>
 					<input type="text" id="name" name="name" value="" />
@@ -320,7 +344,7 @@ Plugin update URI: http://www.osclass.org/
 				</tr>
 				<tr> 
 					<td> 
-					<label for="eMail"><?php _e('Enter your Email Address','offer_button'); ?>: </label>
+					<label for="eMail"><?php _e('Enter your Email Address','offerButton'); ?>: </label>
 					</td>
 					<td>
 					<input type="text" id="eMail" name="eMail" value="" />
@@ -329,20 +353,20 @@ Plugin update URI: http://www.osclass.org/
 				<?php if($offerTrade['b_offerTrade'] == 1 && osc_offerButton_trade() == 1) { ?>
 				<tr>
 				   <td>
-				   <label for="offerType"><?php _e('Offer Type','offer_button'); ?></label>
+				   <label for="offerType"><?php _e('Offer Type','offerButton'); ?></label>
 				   </td>
 				   <td>
 		         <select name="offerType" id="offerType">
-		             <option value="1"><?php _e('Monetary Offer','offer_button'); ?></option>
-		             <option value="2"><?php _e('Trade Offer','offer_button'); ?></option>
-		             <option value="3"><?php _e('Monetary & Trade Offer','offer_button'); ?></option>
+		             <option value="1"><?php _e('Monetary Offer','offerButton'); ?></option>
+		             <option value="2"><?php _e('Trade Offer','offerButton'); ?></option>
+		             <option value="3"><?php _e('Monetary & Trade Offer','offerButton'); ?></option>
 		         </select>
 				   </td>
 				</tr>
 				<?php } ?>
 				<tr> 
 					<td>
-					<label for="offer" id="offerL"><?php _e('Offer','offer_button'); ?>: </label>
+					<label for="offer" id="offerL"><?php _e('Offer','offerButton'); ?>: </label>
 					</td>
 					<td>
 					<input type="text" id="offer" name="offer" size="10" /><?php echo osc_item_currency();?>
@@ -351,7 +375,7 @@ Plugin update URI: http://www.osclass.org/
 			</table>
 			</p>
 			<p>
-				<input type="submit" value="<?php _e('Submit Offer','offer_button'); ?>" />
+				<input type="submit" value="<?php _e('Submit Offer','offerButton'); ?>" />
 			</p>
 		</form>
 		</div>
@@ -359,12 +383,15 @@ Plugin update URI: http://www.osclass.org/
 		<!-- end offerbutton form code -->
     <?php
     }
+    }
     
     function offer_css() {
+      if(osc_is_ad_page() || offer_byItem_page() || offer_button_page()) {
     	echo "\n";
     	echo '<!-- offerButton css -->
     	<link href="' . osc_base_url() . "oc-content/plugins/offerButton/css/demo_table.css" . '" rel="stylesheet" type="text/css" />
     	<link href="' . osc_base_url() . "oc-content/plugins/offerButton/css/style.css" . '" rel="stylesheet" type="text/css" />';
+    	}
     }
     
     function offer_back_css() {
@@ -375,19 +402,18 @@ Plugin update URI: http://www.osclass.org/
     
     function offer_status($offerSt){
     	if ($offerSt == 1) {
-    		return __('Accepted','offer_button');
+    		return __('Accepted','offerButton');
     	}
     	elseif($offerSt == 2) {
-    		return __('Pending...','offer_button');
+    		return __('Pending...','offerButton');
     	}
     	else {
-    		return __('Declined','offer_button');
+    		return __('Declined','offerButton');
     	}
     
     }
     
     function offer_form($catId = '') {
-    $conn = getConnection() ;
     // We received the categoryID
 	if($catId!="") {
 		// We check if the category is the same as our plugin
@@ -400,28 +426,21 @@ Plugin update URI: http://www.osclass.org/
     }
     
     function offer_form_post($catId = null, $item_id = null) {
-    $conn = getConnection() ;
 	// We received the categoryID and the Item ID
 	if($catId!=null) {
 		// We check if the category is the same as our plugin
 		if(osc_is_this_category('offer', $catId) && $item_id!=null) {
 				// Insert the data in our plugin's table
-                    $conn->osc_dbExec("INSERT INTO %st_offer_item_options (fk_i_item_id, b_offerYes, b_offerTrade) VALUES (%d, %d, %d)",
-						DB_TABLE_PREFIX,
-						$item_id,
-						(Params::getParam("offerYes")!='') ? 1 : 0,
-						(Params::getParam("offerTrade")!='') ? 1 : 0
-					);
+				     ModelOffer::newInstance()->insertOptions($item_id, (Params::getParam("offerYes")!='') ? 1 : 0, 0, (Params::getParam("offerTrade")!='') ? 1 : 0);                 
 		}
 	}
     }
     
     // Self-explanatory
     function offer_item_edit($catId = null, $item_id = null) {
-    	$conn = getConnection() ;
     	if(osc_is_this_category('offer', $catId)) {
     	   if(osc_is_web_user_logged_in()){
-		    $detail = $conn->osc_dbFetchResult("SELECT * FROM %st_offer_item_options WHERE fk_i_item_id = %d", DB_TABLE_PREFIX, $item_id);
+		    $detail = ModelOffer::newInstance()->getOfferItemOption($item_id);
 
 		    require_once 'item_edit.php';
 		  }
@@ -429,30 +448,22 @@ Plugin update URI: http://www.osclass.org/
     }
     
     function offer_item_edit_post($catId = null, $item_id = null) {
-	// We received the categoryID and the Item ID
-	if($catId!=null) 
-	{
+	 // We received the categoryID and the Item ID
+	  if($catId!=null) 
+	  {
 		// We check if the category is the same as our plugin
 		if(osc_is_this_category('offer', $catId))
 		{
-			$conn = getConnection() ;
 			// Insert the data in our plugin's table
-            $conn->osc_dbExec("REPLACE INTO %st_offer_item_options (fk_i_item_id, b_offerYes, b_offerTrade) VALUES (%d, %d, %d)",
-				DB_TABLE_PREFIX,
-				$item_id,
-				(Params::getParam("offerYes")!='') ? 1 : 0,
-				(Params::getParam("offerTrade")!='') ? 1 : 0
-			);
+            ModelOffer::newInstance()->replaceOptions($item_id, (Params::getParam("offerYes")!='') ? 1 : 0, 0, (Params::getParam("offerTrade")!='') ? 1 : 0);
 		}
-	}
+	  }
     }
        
     function offer_item_delete($id){
-    	$conn   = getConnection();
-    	$conn->osc_dbExec("DELETE FROM %st_offer_item_options WHERE fk_i_item_id = '%d'", DB_TABLE_PREFIX, $id);
-    	$conn->osc_dbExec("DELETE FROM %st_offer_button WHERE item_id='%d'", DB_TABLE_PREFIX, $id);
-    	
+    	ModelOffer::newInstance()->deleteOfferItem($id);        	
     }
+    
     /**
      * Add new options to supertoolbar plugin (if installed)
      */
@@ -471,15 +482,15 @@ Plugin update URI: http://www.osclass.org/
         //}
         
         $toolbar = SuperToolBar::newInstance();
-        $conn    = getConnection();
-        $offerCheck = $conn->osc_dbFetchResult("SELECT * FROM %st_offerButton WHERE seller_id  = '%d' AND item_id = '%d'", DB_TABLE_PREFIX, osc_logged_user_id(), osc_item_id());
+               
+        $offerCheck = ModelOffer::newInstance()->getOffer('seller_id', osc_logged_user_id(), 'item_id', osc_item_id() );
         
         if($offerCheck){
         $offer_url = osc_base_url(true).'?page=custom&file=offerButton/offer_byItem.php#item' . osc_item_id();
         $toolbar->addOption('<a href="' . $offer_url . '" />' . __('View offers on this ad', 'offfer_button') . '</a>');
         }
-        
-        $offerStatus = $conn->osc_dbFetchResult("SELECT * FROM %st_offerButton WHERE user_id  = '%d' AND item_id = '%d'", DB_TABLE_PREFIX, osc_logged_user_id(), osc_item_id());
+                
+        $offerStatus = ModelOffer::newInstance()->getOffer('user_id', osc_logged_user_id(), 'item_id', osc_item_id() );
         
         if($offerStatus){
         $offerButton_url = osc_base_url(true).'?page=custom&file=offerButton/offerButton.php#item' . osc_item_id();
@@ -585,7 +596,7 @@ Plugin update URI: http://www.osclass.org/
         $offer_status_url    = osc_base_url(true) . '?page=custom&file=offerButton/offer_button.php#item' . $item['pk_i_id'] ;
         $offer_status_url    = '<a href="' . $offer_status_url . '" >' . $offer_status_url . '</a>';
         $status_offer = array();
-        $status_offer = array('1' => __('has been accepted', 'offer_button'), '2' => __('has been changed to pending','offer_button'), '3' => __('has been declined','offer_button'));
+        $status_offer = array('1' => __('has been accepted', 'offerButton'), '2' => __('has been changed to pending','offerButton'), '3' => __('has been declined','offerButton'));
 		  
 		  if ( $offer_status ==1) {
 		  		$sEmail = $itemEmail;

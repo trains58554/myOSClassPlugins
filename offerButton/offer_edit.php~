@@ -58,7 +58,7 @@ switch($promo_action) {
 		
 	case 'pending':
       ModelOffer::newInstance()->updateOfferStatus(2, $offer_id);
-      $buyUser = ModelOffer::newInstance()->getOffer('id', $offer_id, NULL, NULL, NULL, NULL, NULL, NULL);
+      $buyUser = ModelOffer::newInstance()->getOffer('id', $offer_id,,,,,NULL);
 		$item_idA = Item::newInstance()->findByPrimaryKey($item_id);
 		if($buyUser['user_id'] != ''){
       	$user = User::newInstance()->findByPrimaryKey($buyUser['user_id']);
@@ -83,7 +83,7 @@ switch($promo_action) {
 	
 	case 'declined':
       ModelOffer::newInstance()->updateOfferStatus(3, $offer_id);
-      $buyUser = ModelOffer::newInstance()->getOffer('id', $offer_id, NULL, NULL, NULL, NULL, NULL, NULL);
+      $buyUser = ModelOffer::newInstance()->getOffer('id', $offer_id,,,,,,NULL);
       $item_idA = Item::newInstance()->findByPrimaryKey($item_id);
       if($buyUser['user_id'] != ''){
       	$user = User::newInstance()->findByPrimaryKey($buyUser['user_id']);

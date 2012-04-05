@@ -53,7 +53,7 @@
                                         <br />
                                         <br />
                                         <?php                                         
-                                        $offers = ModelOffer::newInstance()->getOffers('item_id', osc_item_id(), NULL, NULL, 1, 'id', 'DESC', NULL);
+                                        $offers = ModelOffer::newInstance()->getOffer('item_id', osc_item_id(), NULL, NULL, 1, 'id', 'DESC', NULL);
                                         ?>
                                         
                                         <div class="dataTables_wrapper">

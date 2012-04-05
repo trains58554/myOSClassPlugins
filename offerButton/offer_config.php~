@@ -118,7 +118,7 @@
         </select>
         <br />
         <br />
-        <label for="email" style="font-weight: bold;"><?php _e('Enable the sending of the email templates', 'offerButton'); ?></label>:<br />
+        <label for="email" style="font-weight: bold;"><?php _e('Disable the sending of the email templates', 'offerButton'); ?></label>:<br />
         <select name="emailTemps" id="emailTemps"> 
         	<option <?php if($emailTemps == 1){echo 'selected="selected"';}?>value='1'>Yes</option>
         	<option <?php if($emailTemps == 0){echo 'selected="selected"';}?>value='0'>No</option>
