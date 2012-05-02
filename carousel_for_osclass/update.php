@@ -4,7 +4,7 @@
 	  if ((osc_get_preference('carousel_version', 'plugin-carousel_for_osclass') == '' ) || (cVersion() > osc_carousel_version() ) || ($override == 1)){
 	  	update(cVersion());
 	  }else {
-	  	echo '<div style="text-align:center; font-size:22px; background-color:#00bb00;"><p>' . __('The Carousel is up to date', 'carousel') . '.</p></div>';
+	  	echo '<div style="text-align:center; font-size:22px; background-color:#00bb00;"><p>' . __('The Carousel is up to date', 'carousel_for_osclass') . '.</p></div>';
 	  }
 	  
      function update($version) {
@@ -21,7 +21,16 @@
 	     osc_set_preference('carousel_arrows'       , '0','plugin-carousel_for_osclass','INTEGER');
 	     osc_set_preference('carousel_version'      , '2.0','plugin-carousel_for_osclass','STRING');
 	   }
-	     echo '<div style="text-align:center; font-size:22px; background-color:#00bb00;"><p>' . __('Carousel Updated to version', 'carousel') . ' ' . osc_carousel_version() . '.</p></div>';
+	   if($version <= '2.1') {
+         osc_set_preference('carousel_version'      , '2.1','plugin-carousel_for_osclass','STRING');
+      }
+      if($version <= '2.2') {
+         osc_set_preference('carousel_version'      , '2.2','plugin-carousel_for_osclass','STRING');
+      }
+      if($version <= '2.3') {
+         osc_set_preference('carousel_version'      , '2.3','plugin-carousel_for_osclass','STRING');
+      }
+	     echo '<div style="text-align:center; font-size:22px; background-color:#00bb00;"><p>' . __('Carousel Updated to version', 'carousel_for_osclass') . ' ' . cVersion() . '.</p></div>';
      }
       /*end update section */
 ?>

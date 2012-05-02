@@ -3,7 +3,7 @@
 Plugin Name: Carousel for Osclass
 Plugin URI: http://www.osclass.org/
 Description: Displays items in a carousel.
-Version: 2.0
+Version: 2.3
 Author: kingsult & JChapman
 Author URI: 
 Short Name: CarouselforOsclass
@@ -12,7 +12,7 @@ Plugin update URI:
 
 
     function cVersion() {
-	  	  $carouselVersion = '2.0';
+	  	  $carouselVersion = '2.3';
 	     return($carouselVersion);
 	 } 
     
@@ -145,7 +145,7 @@ Plugin update URI:
     }
     
     // Self-explanatory
-    function carousel() {
+    function carousel($itemPage = FALSE, $itemLimit = 5) {
     	  $items = (osc_carousel_items() != '') ? osc_carousel_items() : '' ;
         $premOnly = (osc_carousel_premiumOnly() != '') ? osc_carousel_premiumOnly() : '' ;
         $price = (osc_carousel_price() != '') ? osc_carousel_price() : '';
@@ -182,14 +182,15 @@ Plugin update URI:
   	$autospeed = ',
 					auto: ' . $scrolldelay . ' ,
 					speed: 1100,';?>
-					
+
+   	
   	jQuery(document).ready(function(){
 
-
+	
 	/* featured listings slider */
-    jQuery(".slider").jCarouselLite({
-        btnNext: ".next",
-        btnPrev: ".prev",
+    jQuery(".carouselSlider").jCarouselLite({
+        btnNext: ".nextCarousel",
+        btnPrev: ".prevCarousel",
        
         visible: <?php echo $items; ?>,
 		hoverPause:true<?php if($autosp == 1) { echo $autospeed; } else{ echo ',';} ?>
@@ -235,9 +236,9 @@ Plugin update URI:
 
 
 	/* featured listings slider */
-    jQuery(".slider").jCarouselLite({
-        btnNext: ".next",
-        btnPrev: ".prev",
+    jQuery(".carouselSlider").jCarouselLite({
+        btnNext: ".nextCarousel",
+        btnPrev: ".prevCarousel",
         
         visible: <?php echo $items; ?>,
 		hoverPause:true<?php if($autosp == 1) { echo $autospeed; } else{ echo ',';} ?>
@@ -255,9 +256,9 @@ Plugin update URI:
      function carouselosclass_admin_menu() {
         echo '<h3><a href="#">Carousel for Osclass</a></h3>
         <ul> 
-        		<li><a href="' . osc_admin_render_plugin_url(osc_plugin_path(dirname(__FILE__)) . '/admin.php') . '">&raquo; ' . __('Configure', 'carousel') . '</a></li>
-        		<li><a href="' . osc_admin_render_plugin_url(osc_plugin_path(dirname(__FILE__)) . '/displayAdmin.php') . '">&raquo; ' . __('Configure Display', 'carousel') . '</a></li>
-            <li><a href="' . osc_admin_render_plugin_url(osc_plugin_path(dirname(__FILE__)) . '/help.php') . '">&raquo; ' . __('F.A.Q. / Help', 'carousel') . '</a></li>
+        		<li><a href="' . osc_admin_render_plugin_url(osc_plugin_path(dirname(__FILE__)) . '/admin.php') . '">&raquo; ' . __('Configure', 'carousel_for_osclass') . '</a></li>
+        		<li><a href="' . osc_admin_render_plugin_url(osc_plugin_path(dirname(__FILE__)) . '/displayAdmin.php') . '">&raquo; ' . __('Configure Display', 'carousel_for_osclass') . '</a></li>
+            <li><a href="' . osc_admin_render_plugin_url(osc_plugin_path(dirname(__FILE__)) . '/help.php') . '">&raquo; ' . __('F.A.Q. / Help', 'carousel_for_osclass') . '</a></li>
         </ul>';
     }
 

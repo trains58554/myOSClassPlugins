@@ -1,8 +1,31 @@
-<?php  
-$osclassItems = View::newInstance()->_get('items');
+<?php 
+/**
+     * Get if user is on item edit page
+     *
+     * @return boolean
+     */
+    function osc_is_item_edit_page() {
+        $location = Rewrite::newInstance()->get_location();
+        $section = Rewrite::newInstance()->get_section();
+        if($location=='item' && $section=='item_edit') {
+            return true;
+        }
+        return false;
+    }
+
+if(!osc_is_publish_page() && !osc_is_item_edit_page()){
+//$osclassItems = View::newInstance()->_get('items');
 
 $search1 = new search();
-
+if($itemPage) {
+   $pCategory = Category::newInstance()->findRootCategory(osc_item_category_id() );
+   
+   
+   $search1->addCategory($pCategory['pk_i_id']);                   
+   //$search1->addCategory(osc_item_category_id ());
+   
+   $search1->limit (0, $itemLimit);
+}
 if($picOnly == 1 ) {
 	 $search1->addConditions(sprintf("%st_item_resource.fk_i_item_id = %st_item.pk_i_id", DB_TABLE_PREFIX, DB_TABLE_PREFIX));   
 	 $search1->addTable(sprintf("%st_item_resource", DB_TABLE_PREFIX)); 
@@ -23,9 +46,9 @@ if($premOnly == 1) {
                         <?php //echo 'total ' . $iTotalItems;
                         if($aCount >= $items) {?>
                         <?php if (osc_carousel_arrows()) { ?>
-                        <div class="prev"></div>
+                        <div class="prevCarousel"></div>
                         <?php } ?>
-                        <div class="slider"> 
+                        <div class="carouselSlider"> 
                             <ul> 
         
  				<?php if($premOnly == 0){ ?>
@@ -33,7 +56,7 @@ if($premOnly == 1) {
                                     <?php while ( osc_has_items() ) { ?>
                                     <li>   <span class="feat_left"> 
                                          
-                                        <?php if(osc_item_is_premium()){ echo 'Premium Ad';}else{echo '<br />';}?>
+                                        <?php if(osc_item_is_premium()){ _e('Premium Ad', 'carousel_for_osclass');}else{echo '<br />';}?>
                                                 <?php if( osc_count_item_resources() ) { ?>
                                                 
                                                     <a href="<?php echo osc_item_url() ; ?>" title="<?php echo osc_item_title() ; ?>" >
@@ -47,6 +70,7 @@ if($premOnly == 1) {
                                              <div class="clr"></div> 
 
                                         <a href="<?php echo osc_item_url() ; ?>"><?php echo substr(osc_item_title(),0,30) ; ?></a>
+                                        
                                         </span>
                                     </li>
 
@@ -85,9 +109,9 @@ if($premOnly == 1) {
                    
                        </div> <!-- /slider -->
                        <?php if (osc_carousel_arrows()) { ?>
-                       <div class="next"></div>
+                       <div class="nextCarousel"></div>
                        <?php } ?>
-                       <?php } else { echo '<div class="noSlides">' . __('No items to display','carousel') . '</div>'; } ?>
+                       <?php } else { echo '<div class="noSlides">' . __('No items to display', 'carousel_for_osclass') . '</div>'; } ?>
                     </div> 
                     
                     <div class="clr"></div> 
@@ -95,6 +119,7 @@ if($premOnly == 1) {
         </div><!-- /shadowblock_out -->
 </div>
 <?php
-View::newInstance()->_exportVariableToView('items', $osclassItems);
-
+//View::newInstance()->_exportVariableToView('items', $osclassItems);
+osc_reset_items();
+}
 ?>

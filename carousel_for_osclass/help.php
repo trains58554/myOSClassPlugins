@@ -25,34 +25,34 @@
         <div>
             <fieldset>
                 <legend>
-                    <h1><?php _e('Carousel for Osclass Help', 'carousel'); ?></h1>
+                    <h1><?php _e('Carousel for Osclass Help', 'carousel_for_osclass'); ?></h1>
                 </legend>
                 <h2>
-                    <?php _e('What is Carousel for Osclass Plugin?', 'carousel'); ?>
+                    <?php _e('What is Carousel for Osclass Plugin?', 'carousel_for_osclass'); ?>
                 </h2>
                 <p>
-                    <?php _e('Carousel for Osclass is an easy to use plugin to display the latest ads submitted on your Osclass Installation. Your visitors will get a very quick overview of the ads on your site.', 'carousel'); ?>
+                    <?php _e('Carousel for Osclass is an easy to use plugin to display the latest ads submitted on your Osclass Installation. Your visitors will get a very quick overview of the ads on your site.', 'carousel_for_osclass'); ?>
                 </p>
                 <h2>
-                    <?php _e('How does Carousel for Osclass plugin work?', 'carousel'); ?>
+                    <?php _e('How does Carousel for Osclass plugin work?', 'carousel_for_osclass'); ?>
                 </h2>
                 <p>
-                    <?php _e('In order to use Carousel for Osclass plugin, you should edit your theme file <b>main.php</b> and add the following line anywhere in the code you want the carousel to display.', 'carousel'); ?>:
+                    <?php _e('In order to use Carousel for Osclass plugin, you should edit your theme file <b>main.php</b> and add the following line anywhere in the code you want the carousel to display.', 'carousel_for_osclass'); ?>:
                 </p>
                 <pre>
-                    &lt;?php if function_exists('carousel') {carousel();} ?&gt;
+                    &lt;?php if (function_exists('carousel')) {carousel();} ?&gt;
                 </pre>
                 <h2>
                    <?php _e('Could I cutomize the style of Carousel for Osclass plugin?','carousel'); ?>
                 </h2>
                 <p>
-                   <?php _e('You can configure the layout under configure Display.', 'carousel'); ?>
+                   <?php _e('You can configure the layout under configure Display.', 'carousel_for_osclass'); ?>
                 </p>
                 <p>
-                   <?php _e('The plugin is compatible with Osclass version 2.1 and up.', 'carousel'); ?>
+                   <?php _e('The plugin is compatible with Osclass version 2.1 and up.', 'carousel_for_osclass'); ?>
                 </p>
                 <p>
-                   <?php _e('Created by Sultan Semlali and JChapman using Superfish and Jquery.', 'carousel'); ?>
+                   <?php _e('Created by Sultan Semlali and JChapman using Superfish and Jquery.', 'carousel_for_osclass'); ?>
                 </p>
             </fieldset>
         </div>

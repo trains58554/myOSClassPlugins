@@ -73,7 +73,7 @@
         $dao_preference->update(array("s_value" => $Sheight), array("s_section" =>"plugin-carousel_for_osclass", "s_name" => "carousel_Sheight")) ;
         $dao_preference->update(array("s_value" => $b_color), array("s_section" =>"plugin-carousel_for_osclass", "s_name" => "carousel_b_color")) ;
         $dao_preference->update(array("s_value" => $i_color), array("s_section" =>"plugin-carousel_for_osclass", "s_name" => "carousel_i_color")) ;
-        echo '<div style="text-align:center; font-size:22px; background-color:#00bb00;"><p>' . __('Settings Saved', 'carousel') . '.</p></div>';
+        echo '<div style="text-align:center; font-size:22px; background-color:#00bb00;"><p>' . __('Settings Saved', 'carousel_for_osclass') . '.</p></div>';
     }
     unset($dao_preference) ;
     
@@ -86,9 +86,9 @@
     <input type="hidden" name="option" value="stepone" />
     <div>
     <fieldset>
-        <h2><?php _e('Carousel for Osclass Display Preferences', 'carousel'); ?></h2> 
+        <h2><?php _e('Carousel for Osclass Display Preferences', 'carousel_for_osclass'); ?></h2> 
         <?php if(osc_carousel_version() != '' && osc_carousel_version() == cVersion()) { ?>
-        <label for="item" style="font-weight: bold;"><?php _e('Number of items to display at one time', 'carousel'); ?></label>:<br />
+        <label for="item" style="font-weight: bold;"><?php _e('Number of items to display at one time', 'carousel_for_osclass'); ?></label>:<br />
         <select name="item" id="item"> 
         	<option <?php if($item == 1){echo 'selected="selected"';}?>value='1'>1</option>
         	<option <?php if($item == 2){echo 'selected="selected"';}?>value='2'>2</option>
@@ -100,42 +100,42 @@
         <br />
         <label for="vertical" style="font-weight: bold;"><?php _e('Display the carousel vertically','carousel'); ?></label>:<br />
         <select name="vertical" id="vertical">
-        	<option <?php if($vertical ==0){echo 'selected="selected"';}?> value='0'><?php _e('No', 'carousel'); ?></option>
-        	<option <?php if($vertical ==1){echo 'selected="selected"';}?> value='1'><?php _e('Yes', 'carousel'); ?></option>
+        	<option <?php if($vertical ==0){echo 'selected="selected"';}?> value='0'><?php _e('No', 'carousel_for_osclass'); ?></option>
+        	<option <?php if($vertical ==1){echo 'selected="selected"';}?> value='1'><?php _e('Yes', 'carousel_for_osclass'); ?></option>
         </select>        
         <br />
         <fieldset>
         <legend>Carousel Width and Height Settings:</legend>
-        <label for="width" style="font-weight: bold;"><?php _e('Width in pixel\'s (Default is 718) ', 'carousel'); ?></label>:<br />
+        <label for="width" style="font-weight: bold;"><?php _e('Width in pixel\'s (Default is 718) ', 'carousel_for_osclass'); ?></label>:<br />
         <input type="text" name="width" id="width" value="<?php echo $width; ?>" />
         <br />
-        <label for="height" style="font-weight: bold;"><?php _e('Height in pixel\'s (Default is 120) ', 'carousel'); ?></label>:<br />
+        <label for="height" style="font-weight: bold;"><?php _e('Height in pixel\'s (Default is 120) ', 'carousel_for_osclass'); ?></label>:<br />
         <input type="text" name="height" id="height" value="<?php echo $height; ?>" />
         </fieldset>
         <fieldset>
         <legend>Ad Slide Width and Height Settings:</legend>
-        <label for="Swidth" style="font-weight: bold;"><?php _e('Ad Slide Width in pixel\'s (Default is 140) ', 'carousel'); ?></label>:<br />
+        <label for="Swidth" style="font-weight: bold;"><?php _e('Ad Slide Width in pixel\'s (Default is 140) ', 'carousel_for_osclass'); ?></label>:<br />
         <input type="text" name="Swidth" id="Swidth" value="<?php echo $Swidth; ?>" />
         <br />
-        <label for="Sheight" style="font-weight: bold;"><?php _e('Ad Slide Height in pixel\'s (Default is 110) ', 'carousel'); ?></label>:<br />
+        <label for="Sheight" style="font-weight: bold;"><?php _e('Ad Slide Height in pixel\'s (Default is 110) ', 'carousel_for_osclass'); ?></label>:<br />
         <input type="text" name="Sheight" id="Sheight" value="<?php echo $Sheight; ?>" />
         </fieldset>
         <br />
-        <label for="b_color" style="font-weight: bold;"><?php _e('Background Color (Default is #E9F5F9) ', 'carousel'); ?></label>:<br />
+        <label for="b_color" style="font-weight: bold;"><?php _e('Background Color (Default is #E9F5F9) ', 'carousel_for_osclass'); ?></label>:<br />
         <input type="text" class="color {hash:true}" name="b_color" id="b_color" value="<?php echo $b_color; ?>" />
         <br />
-        <label for="i_color" style="font-weight: bold;"><?php _e('Hover Color (Default is #94CEE4) ', 'carousel'); ?></label>:<br />
+        <label for="i_color" style="font-weight: bold;"><?php _e('Hover Color (Default is #94CEE4) ', 'carousel_for_osclass'); ?></label>:<br />
         <input type="text" class="color {hash:true}" name="i_color" id="i_color" value="<?php echo $i_color; ?>" />
         <br />        
         <br />
-        <input type="submit" value="<?php _e('Save', 'carousel'); ?>" />
+        <input type="submit" value="<?php _e('Save', 'carousel_for_osclass'); ?>" />
         <br />
         <br />
         <?php 
         //admin_carouselosclass_js();
         //carousel(); ?>
         <?php }else{
-        		echo '<a href="' . osc_admin_render_plugin_url(osc_plugin_path(dirname(__FILE__)) . '/update.php') . '">&raquo; ' . __('Click here to finish update', 'carousel') . '</a>';
+        		echo '<a href="' . osc_admin_render_plugin_url(osc_plugin_path(dirname(__FILE__)) . '/update.php') . '">&raquo; ' . __('Click here to finish update', 'carousel_for_osclass') . '</a>';
         } ?>
         </fieldset>
     </div>
