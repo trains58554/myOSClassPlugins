@@ -28,7 +28,8 @@ if($itemPage) {
    $search1->limit (0, $itemLimit);
 }
 if($picOnly == 1 ) {
-	 $search1->withPicture(true); 
+	 $search1->addConditions(sprintf("%st_item_resource.fk_i_item_id = %st_item.pk_i_id", DB_TABLE_PREFIX, DB_TABLE_PREFIX));   
+	 $search1->addTable(sprintf("%st_item_resource", DB_TABLE_PREFIX)); 
 }
 if($premOnly == 1) {  
     $search1->addConditions(sprintf("b_premium = %d", 1));    

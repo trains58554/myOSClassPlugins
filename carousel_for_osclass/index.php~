@@ -172,7 +172,16 @@ Plugin update URI:
     	  <?php $cssurl = 'oc-content/plugins/carousel_for_osclass/css/slideshow.css' ;
     		include($cssurl) ; ?>
     	</style>
-    	
+    	<script type="text/javascript" >
+			if(!window.jQuery)
+			{
+			   var script = document.createElement('script');
+			   script.type = "text/javascript";
+			   script.src = "oc-content/plugins/carousel_for_osclass/js/jquery.js";
+			   document.getElementsByTagName('head')[0].appendChild(script);
+			}
+
+		</script>
     	
 
   	<script type='text/javascript' src="<?php echo osc_base_url() . 'oc-content/plugins/carousel_for_osclass/js/jCarouselLite.js'; ?>">
