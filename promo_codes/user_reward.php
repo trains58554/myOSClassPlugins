@@ -37,7 +37,7 @@
         	<option <?php if($reward_enabled == 1){echo 'selected="selected"';}?>value='1'>Yes</option>
         	<option <?php if($reward_enabled == 0){echo 'selected="selected"';}?>value='0'>No</option>
         </select>
-        <label for="reward_amount" style="font-weight: bold;"><br /><?php _e('Signup Bouns Amount', 'promo'); ?></label>:<br /> 
+        <label for="reward_amount" style="font-weight: bold;"><br /><?php _e('Signup Bonus Amount', 'promo'); ?></label>:<br /> 
       	<input type="text" name="reward_amount" id="reward_amount" value="<?php echo $reward_amount; ?>" />
         <br />
         <br />

@@ -11,7 +11,16 @@
   Plugin update URI: http://www.osclass.org/
  */
 	function table(){
-		//check if a table exist
+	   //Check to see if user flagging plugin installed
+    $plugE = Plugins::listEnabled();
+    $paypalE = Plugins::listEnabled('papal/index.php');
+    $paypalPlusE = Plugins::listEnabled('papalplus/index.php');
+    if($paypalE !='' || $paypalPlusE != '') {
+    	return TRUE;
+    } else{
+    	return FALSE;
+    }
+		/*check if a table exist
 		$conn = getConnection();
 		$table_list = $conn->osc_dbFetchValue("SHOW TABLES FROM %s LIKE '%st_paypal%%'", DB_NAME, DB_TABLE_PREFIX);
 		if ($table_list){
@@ -19,6 +28,7 @@
 		}else{
 			return FALSE;
 		}
+		*/
 	}
 	
 $tableexist = table();
